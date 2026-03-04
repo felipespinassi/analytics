@@ -1,27 +1,14 @@
-import { BarChartComponent } from "@/components/BarChart/BarChart";
-import BottomSheetComponent from "@/components/BottomSheet/BottomSheet";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import { TouchableOpacityBox } from "@/components/TouchableOpacityBox/TouchableOpacityBox";
+import theme from "@/constants/theme";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
-import BottomSheet from "@gorhom/bottom-sheet";
-import {
-  ChartColumn,
-  Funnel,
-  TrendingDown,
-  TrendingUp,
-} from "lucide-react-native";
-import React, { useRef } from "react";
+import { Calendar, ShoppingBag } from "lucide-react-native";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function index() {
-  const bottomSheetRef = useRef<BottomSheet>(null);
-
-  const handleOpenBottomSheet = () => {
-    bottomSheetRef.current?.snapToIndex(1);
-  };
-
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -31,114 +18,166 @@ export default function index() {
 
   const { data } = useGetOrdersRevenue();
 
+  const [rangeSelected, setRangeSelected] = useState(0);
+
+  const daysOfMonth = ["Hoje", "7 dias", "15 dias", "30 dias"];
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.container}>
         <Box padding="m" flex={1}>
-          <Box
-            mb="m"
-            justifyContent="space-between"
-            flexDirection="row"
-            width={"auto"}
-            alignItems="center"
-          >
-            <Text fontSize={20} fontWeight={"bold"}>
-              Dashboard
-            </Text>
-
-            <TouchableOpacityBox
-              flexDirection="row"
-              onPress={handleOpenBottomSheet}
-            >
-              <Text mr="s">Filtros</Text>
-              <Funnel size={20} color={"black"} />
-            </TouchableOpacityBox>
-          </Box>
-
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Box gap="s">
-              <Box
-                bg="successLight"
-                borderColor="success"
-                borderWidth={0.2}
-                gap="s"
-                padding="m"
-                borderRadius="m"
-                flexDirection="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box>
-                  <Text>Pedidos</Text>
-                  <Text fontSize={22} fontWeight={"bold"} color="success">
-                    {data?.companies[0].quantidadePedidos || 0}
-                  </Text>
-                </Box>
-
-                <Box padding="s" backgroundColor="success200" borderRadius="m">
-                  <TrendingUp color={"green"} />
-                </Box>
-              </Box>
-
-              <Box
-                bg="errorLight"
-                borderColor="errorDark"
-                borderWidth={0.2}
-                gap="s"
-                padding="m"
-                borderRadius="m"
-                flexDirection="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box>
-                  <Text>Pedidos Cancelados</Text>
-                  <Text fontSize={22} fontWeight={"bold"} color="error">
-                    {data?.companies[0].quantidadeCancelados || 0}
-                  </Text>
-                </Box>
-
-                <Box padding="s" backgroundColor="error200" borderRadius="m">
-                  <TrendingDown color={"red"} />
-                </Box>
-              </Box>
-
-              <Box
-                bg="infoLight"
-                borderColor="infoDark"
-                borderWidth={0.2}
-                gap="s"
-                padding="m"
-                borderRadius="m"
-                flexDirection="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box>
-                  <Text>Faturamento total</Text>
-                  <Text fontSize={22} fontWeight={"bold"} color="info">
-                    {formatCurrency(data?.companies[0].totalFaturamento || 0)}
-                  </Text>
-                </Box>
-
-                <Box padding="s" backgroundColor="info200" borderRadius="m">
-                  <ChartColumn color={"blue"} />
-                </Box>
-              </Box>
+            <Text paddingBottom="xs" fontSize={12}>
+              Olá, Vendedor 👋
+            </Text>
+            <Box
+              mb="m"
+              justifyContent="space-between"
+              flexDirection="row"
+              width={"auto"}
+              alignItems="center"
+            >
+              <Text fontSize={20} fontWeight={"bold"}>
+                Painel de Vendas
+              </Text>
             </Box>
 
-            <Box mt="xl">
-              <Box>
-                <Text fontSize={18} fontWeight={"bold"} mb="s">
-                  Faturamento últimos 6 meses
-                </Text>
+            <Box flexDirection="row" gap="s">
+              {daysOfMonth.map((day, index) => {
+                return (
+                  <TouchableOpacityBox
+                    key={index}
+                    paddingHorizontal="m"
+                    paddingVertical="s"
+                    backgroundColor={
+                      rangeSelected === index ? "primary" : "secondary"
+                    }
+                    borderRadius="l"
+                    onPress={() => setRangeSelected(index)}
+                  >
+                    <Text fontSize={12} fontWeight={"semibold"}>
+                      {day}
+                    </Text>
+                  </TouchableOpacityBox>
+                );
+              })}
+            </Box>
+            <Box
+              flexDirection="row"
+              gap="s"
+              alignItems="center"
+              marginBottom="s"
+              marginTop="l"
+            >
+              <Calendar size={14} color={theme.colors.mutedForeground} />
+              <Text color="mutedForeground" fontSize={14} fontWeight={"bold"}>
+                RESUMO DO DIA
+              </Text>
+            </Box>
+
+            <Box gap="m">
+              <Box flexDirection="row" gap="m">
+                <Box
+                  bg="card"
+                  flex={1}
+                  borderWidth={0.3}
+                  borderColor="mutedForeground"
+                  padding="m"
+                  borderRadius="l"
+                >
+                  <Box
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb="s"
+                  >
+                    <Text fontSize={14} color="mutedForeground">
+                      PEDIDOS
+                    </Text>
+                    <Box padding="s" bg="primary10" borderRadius="m">
+                      <ShoppingBag color={theme.colors.primary} size={14} />
+                    </Box>
+                  </Box>
+
+                  <Text fontWeight={"bold"}>47</Text>
+                </Box>
+                <Box
+                  bg="card"
+                  flex={1}
+                  borderWidth={0.3}
+                  borderColor="mutedForeground"
+                  padding="m"
+                  borderRadius="l"
+                >
+                  <Box
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb="s"
+                  >
+                    <Text fontSize={14} color="mutedForeground">
+                      PEDIDOS CANCELADOS
+                    </Text>
+                    <Box padding="s" bg="primary10" borderRadius="m">
+                      <ShoppingBag color={theme.colors.primary} size={14} />
+                    </Box>
+                  </Box>
+
+                  <Text fontWeight={"bold"}>47</Text>
+                </Box>
               </Box>
-              <BarChartComponent />
+              <Box flexDirection="row" gap="m">
+                <Box
+                  bg="card"
+                  flex={1}
+                  borderWidth={0.3}
+                  borderColor="mutedForeground"
+                  padding="m"
+                  borderRadius="l"
+                >
+                  <Box
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb="s"
+                  >
+                    <Text fontSize={14} color="mutedForeground">
+                      FATURAMENTO
+                    </Text>
+                    <Box padding="s" bg="primary10" borderRadius="m">
+                      <ShoppingBag color={theme.colors.primary} size={14} />
+                    </Box>
+                  </Box>
+
+                  <Text fontWeight={"bold"}>47</Text>
+                </Box>
+                <Box
+                  bg="card"
+                  flex={1}
+                  borderWidth={0.3}
+                  borderColor="mutedForeground"
+                  padding="m"
+                  borderRadius="l"
+                >
+                  <Box
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb="s"
+                  >
+                    <Text fontSize={14} color="mutedForeground">
+                      VALOR CANCELADO
+                    </Text>
+                    <Box padding="s" bg="primary10" borderRadius="m">
+                      <ShoppingBag color={theme.colors.primary} size={14} />
+                    </Box>
+                  </Box>
+
+                  <Text fontWeight={"bold"}>47</Text>
+                </Box>
+              </Box>
             </Box>
           </ScrollView>
         </Box>
-
-        <BottomSheetComponent ref={bottomSheetRef} />
       </SafeAreaView>
     </GestureHandlerRootView>
   );
@@ -147,5 +186,6 @@ export default function index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.colors.background,
   },
 });
