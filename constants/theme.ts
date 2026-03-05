@@ -16,11 +16,13 @@ const palette = {
   info: "hsl(200 70% 50%)",
   chart4: "hsl(280 60% 55%)",
   chart5: "hsl(350 70% 55%)",
+  container: "#2c2f33",
 };
 
 const theme = createTheme({
   colors: {
     ...palette,
+    containerBackground: palette.background,
     mainBackground: palette.background,
     mainForeground: palette.foreground,
     cardBackground: palette.card,
