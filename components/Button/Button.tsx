@@ -1,13 +1,16 @@
 import React from "react";
+import { ActivityIndicator } from "react-native";
 import { Text } from "../RestyleComponents/RestyleComponents";
 import { TouchableOpacityBox } from "../TouchableOpacityBox/TouchableOpacityBox";
 
 export default function Button({
   children,
   onPress,
+  loading,
 }: {
   children: React.ReactNode;
   onPress: () => void;
+  loading?: boolean;
 }) {
   return (
     <TouchableOpacityBox
@@ -17,9 +20,13 @@ export default function Button({
       alignItems="center"
       onPress={onPress}
     >
-      <Text color="background" fontWeight={"bold"}>
-        {children}
-      </Text>
+      {!loading ? (
+        <Text color="background" fontWeight={"bold"}>
+          {children}
+        </Text>
+      ) : (
+        <ActivityIndicator size="small" color="#fff" />
+      )}
     </TouchableOpacityBox>
   );
 }
