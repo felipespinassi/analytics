@@ -7,6 +7,7 @@ export const fetcher = async (...args) => {
   return fetch(...args, {
     headers: {
       Authorization: token,
+      "content-type": "application/json",
     },
   }).then((res) => res.json());
 };

@@ -1,14 +1,22 @@
+import { BarChartComponent } from "@/components/BarChart/BarChart";
+import { BottomSheetCalendar } from "@/components/CalendarBottomSheet/CalendarBottomSheet";
+import CardGeneric from "@/components/CardGeneric/CardGeneric";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import { TouchableOpacityBox } from "@/components/TouchableOpacityBox/TouchableOpacityBox";
 import { marketplaces } from "@/constants/marketplaces";
 import theme from "@/constants/theme";
 import { useGetMarketplaces } from "@/hooks/useGetMarketplaces";
-import { Calendar, ChevronRight, ShoppingBag } from "lucide-react-native";
+import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
+import { dateRange } from "@/utils/selectDate";
+import { router } from "expo-router";
+import { Calendar as CalendarIcon, ChevronRight } from "lucide-react-native";
 import React, { useState } from "react";
 import { Image, ScrollView, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function index() {
+  const [isOpen, setIsOpen] = useState(false);
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -16,11 +24,17 @@ export default function index() {
     }).format(value);
   };
 
+  const [rangeSelected, setRangeSelected] = useState({
+    from: dateRange[2].from,
+    to: dateRange[2].to,
+    label: dateRange[2].label,
+  });
+
   const { data } = useGetMarketplaces();
-
-  const [rangeSelected, setRangeSelected] = useState(0);
-
-  const daysOfMonth = ["Hoje", "7 dias", "15 dias", "30 dias"];
+  const { revenue } = useGetOrdersRevenue({
+    dataInicial: rangeSelected.from,
+    dataFinal: rangeSelected.to,
+  });
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -41,26 +55,34 @@ export default function index() {
             </Text>
           </Box>
 
+          {/* FILTROS */}
+
           <Box flexDirection="row" gap="s">
-            {daysOfMonth.map((day, index) => {
+            {dateRange.map((day, index) => {
               return (
                 <TouchableOpacityBox
                   key={index}
                   paddingHorizontal="m"
                   paddingVertical="s"
                   backgroundColor={
-                    rangeSelected === index ? "primary" : "secondary"
+                    rangeSelected.label === day.label ? "primary" : "secondary"
                   }
                   borderRadius="l"
-                  onPress={() => setRangeSelected(index)}
+                  onPress={() => {
+                    day.label === "Personalizado"
+                      ? (setRangeSelected(day), setIsOpen(true))
+                      : setRangeSelected(day);
+                  }}
                 >
                   <Text fontSize={12} fontWeight={"semibold"}>
-                    {day}
+                    {day.label}
                   </Text>
                 </TouchableOpacityBox>
               );
             })}
           </Box>
+
+          {/* RESUMO DO DIA  */}
           <Box
             flexDirection="row"
             gap="s"
@@ -68,123 +90,43 @@ export default function index() {
             marginBottom="s"
             marginTop="l"
           >
-            <Calendar size={14} color={theme.colors.mutedForeground} />
+            <CalendarIcon size={14} color={theme.colors.mutedForeground} />
             <Text color="mutedForeground" fontSize={14} fontWeight={"bold"}>
               RESUMO DO DIA
             </Text>
           </Box>
 
+          {/* CARDS */}
           <Box gap="m">
             <Box flexDirection="row" gap="m">
-              <Box
-                bg="card"
-                flex={1}
-                borderWidth={0.3}
-                borderColor="mutedForeground"
-                padding="m"
-                borderRadius="l"
-              >
-                <Box
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  mb="s"
-                >
-                  <Text fontSize={14} color="mutedForeground">
-                    PEDIDOS
-                  </Text>
-                  <Box padding="s" bg="primary10" borderRadius="m">
-                    <ShoppingBag color={theme.colors.primary} size={14} />
-                  </Box>
-                </Box>
+              <CardGeneric
+                label="PEDIDOS"
+                value={revenue?.companies?.[0]?.quantidadePedidos || 0}
+              />
 
-                <Text fontWeight={"bold"} fontSize={22}>
-                  47
-                </Text>
-              </Box>
-              <Box
-                bg="card"
-                flex={1}
-                borderWidth={0.3}
-                borderColor="mutedForeground"
-                padding="m"
-                borderRadius="l"
-              >
-                <Box
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  mb="s"
-                >
-                  <Text fontSize={14} color="mutedForeground">
-                    PEDIDOS CANCELADOS
-                  </Text>
-                  <Box padding="s" bg="primary10" borderRadius="m">
-                    <ShoppingBag color={theme.colors.primary} size={14} />
-                  </Box>
-                </Box>
-
-                <Text fontWeight={"bold"} fontSize={22}>
-                  47
-                </Text>
-              </Box>
+              <CardGeneric
+                label="PEDIDOS CANCELADOS"
+                value={revenue?.companies?.[0]?.quantidadeCancelados || 0}
+              />
             </Box>
             <Box flexDirection="row" gap="m">
-              <Box
-                bg="card"
-                flex={1}
-                borderWidth={0.3}
-                borderColor="mutedForeground"
-                padding="m"
-                borderRadius="l"
-              >
-                <Box
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  mb="s"
-                >
-                  <Text fontSize={14} color="mutedForeground">
-                    FATURAMENTO
-                  </Text>
-                  <Box padding="s" bg="primary10" borderRadius="m">
-                    <ShoppingBag color={theme.colors.primary} size={14} />
-                  </Box>
-                </Box>
+              <CardGeneric
+                label="FATURAMENTO"
+                value={formatCurrency(
+                  revenue?.companies?.[0]?.totalFaturamento || 0,
+                )}
+              />
 
-                <Text fontWeight={"bold"} fontSize={22}>
-                  47
-                </Text>
-              </Box>
-              <Box
-                bg="card"
-                flex={1}
-                borderWidth={0.3}
-                borderColor="mutedForeground"
-                padding="m"
-                borderRadius="l"
-              >
-                <Box
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  mb="s"
-                >
-                  <Text fontSize={14} color="mutedForeground">
-                    VALOR CANCELADO
-                  </Text>
-                  <Box padding="s" bg="primary10" borderRadius="m">
-                    <ShoppingBag color={theme.colors.primary} size={14} />
-                  </Box>
-                </Box>
-
-                <Text fontWeight={"bold"} fontSize={22}>
-                  47
-                </Text>
-              </Box>
+              <CardGeneric
+                label="VALOR CANCELADO"
+                value={formatCurrency(
+                  revenue?.companies?.[0]?.totalCancelado || 0,
+                )}
+              />
             </Box>
           </Box>
 
+          {/* MARKETPLACES */}
           <Box mt="l">
             <Text color="mutedForeground" fontSize={14} fontWeight={"bold"}>
               MARKETPLACES
@@ -193,6 +135,12 @@ export default function index() {
             {data?.marketplaces?.map((marketplace: string, index: number) => {
               return (
                 <TouchableOpacityBox
+                  onPress={() =>
+                    router.push({
+                      pathname: "/(stack)/marketplaceDetails",
+                      params: { marketplace },
+                    })
+                  }
                   key={index}
                   gap="m"
                   flex={1}
@@ -246,8 +194,24 @@ export default function index() {
               );
             })}
           </Box>
+
+          <Box marginVertical="m">
+            <Text marginBottom="m" fontWeight={"bold"} color="mutedForeground">
+              FATURAMENTO DOS ÚLTIMOS 6 MESES
+            </Text>
+
+            <BarChartComponent />
+          </Box>
         </ScrollView>
       </Box>
+
+      {isOpen && (
+        <BottomSheetCalendar
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          setRangeSelected={setRangeSelected}
+        />
+      )}
     </GestureHandlerRootView>
   );
 }

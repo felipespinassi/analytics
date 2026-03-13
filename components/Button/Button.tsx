@@ -7,21 +7,27 @@ export default function Button({
   children,
   onPress,
   loading,
+  variant,
 }: {
   children: React.ReactNode;
   onPress: () => void;
   loading?: boolean;
+  variant?: "primary" | "secondary";
 }) {
   return (
     <TouchableOpacityBox
-      backgroundColor="primary"
+      flex={1}
+      backgroundColor={variant === "primary" ? "primary" : "secondary"}
       padding="m"
       borderRadius="s"
       alignItems="center"
       onPress={onPress}
     >
       {!loading ? (
-        <Text color="background" fontWeight={"bold"}>
+        <Text
+          color={variant === "primary" ? "background" : "mutedForeground"}
+          fontWeight={"bold"}
+        >
           {children}
         </Text>
       ) : (

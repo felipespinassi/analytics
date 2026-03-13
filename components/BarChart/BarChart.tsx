@@ -1,3 +1,4 @@
+import theme from "@/constants/theme";
 import { View } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 
@@ -20,6 +21,11 @@ export const BarChartComponent = () => {
         data={barData}
         yAxisThickness={0}
         xAxisThickness={0}
+        xAxisLabelTextStyle={{
+          color: theme.colors.mutedForeground,
+          fontSize: 12,
+        }}
+        yAxisTextStyle={{ color: theme.colors.mutedForeground, fontSize: 12 }}
       />
     </View>
   );
