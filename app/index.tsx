@@ -40,7 +40,7 @@ export default function index() {
 
       await createAccess_token(data.access_token);
 
-      router.push("/(stack)");
+      router.push("/(stack)/Dashboard");
     } catch (error) {
       Alert.alert(
         "Erro",
@@ -53,7 +53,7 @@ export default function index() {
   async function checkToken() {
     const token = await SecureStore.getItemAsync(ACCESS_TOKEN);
     if (token) {
-      router.push("/(stack)");
+      router.push("/(stack)/Dashboard");
     }
   }
 
@@ -96,7 +96,11 @@ export default function index() {
           onChangeText={(text) => setValue("password", text)}
         />
       </Box>
-      <Button onPress={handleSubmit(onSubmit)} loading={loading}>
+      <Button
+        variant="primary"
+        onPress={handleSubmit(onSubmit)}
+        loading={loading}
+      >
         Entrar
       </Button>
     </Box>

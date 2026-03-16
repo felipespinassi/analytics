@@ -92,11 +92,15 @@ export const BottomSheetCalendar = ({
           </View>
 
           <Box flexDirection="row" gap="m">
-            <Button onPress={onCancel}>Cancelar</Button>
+            <Box flex={1}>
+              <Button onPress={onCancel}>Cancelar</Button>
+            </Box>
 
-            <Button variant="primary" onPress={onConfirm}>
-              Confirmar
-            </Button>
+            <Box flex={1}>
+              <Button variant="primary" onPress={onConfirm}>
+                Confirmar
+              </Button>
+            </Box>
           </Box>
         </View>
       </View>

@@ -17,14 +17,8 @@ export const dateRange = [
     label: "15 dias",
   },
   {
-    from: dayjs().subtract(11, "day").startOf("day").format("YYYY-MM-DD"),
+    from: dayjs().subtract(30, "day").startOf("day").format("YYYY-MM-DD"),
     to: dayjs().endOf("day").format("YYYY-MM-DD"),
     label: "30 dias",
-  },
-
-  {
-    from: "",
-    to: "",
-    label: "Personalizado",
   },
 ];

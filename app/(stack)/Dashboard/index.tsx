@@ -3,26 +3,20 @@ import { BottomSheetCalendar } from "@/components/CalendarBottomSheet/CalendarBo
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import { TouchableOpacityBox } from "@/components/TouchableOpacityBox/TouchableOpacityBox";
-import { marketplaces } from "@/constants/marketplaces";
 import theme from "@/constants/theme";
 import { useGetMarketplaces } from "@/hooks/useGetMarketplaces";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
+import { formatCurrency } from "@/utils/formatCurrency";
+import { formatDecimal } from "@/utils/formatDecimal";
 import { dateRange } from "@/utils/selectDate";
-import { router } from "expo-router";
-import { Calendar as CalendarIcon, ChevronRight } from "lucide-react-native";
+import { Calendar as CalendarIcon } from "lucide-react-native";
 import React, { useState } from "react";
-import { Image, ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import MarketplaceSelected from "./components/MarketplaceSelected/MarketplaceSelected";
 
 export default function index() {
   const [isOpen, setIsOpen] = useState(false);
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
-  };
 
   const [rangeSelected, setRangeSelected] = useState({
     from: dateRange[2].from,
@@ -31,7 +25,7 @@ export default function index() {
   });
 
   const { data } = useGetMarketplaces();
-  const { revenue } = useGetOrdersRevenue({
+  const { revenue, isLoading } = useGetOrdersRevenue({
     dataInicial: rangeSelected.from,
     dataFinal: rangeSelected.to,
   });
@@ -69,9 +63,7 @@ export default function index() {
                   }
                   borderRadius="l"
                   onPress={() => {
-                    day.label === "Personalizado"
-                      ? (setRangeSelected(day), setIsOpen(true))
-                      : setRangeSelected(day);
+                    setRangeSelected(day);
                   }}
                 >
                   <Text fontSize={12} fontWeight={"semibold"}>
@@ -80,6 +72,20 @@ export default function index() {
                 </TouchableOpacityBox>
               );
             })}
+
+            <TouchableOpacityBox
+              paddingHorizontal="m"
+              paddingVertical="s"
+              backgroundColor={"secondary"}
+              borderRadius="l"
+              onPress={() => {
+                setIsOpen(true);
+              }}
+            >
+              <Text fontSize={12} fontWeight={"semibold"}>
+                Personalizado
+              </Text>
+            </TouchableOpacityBox>
           </Box>
 
           {/* RESUMO DO DIA  */}
@@ -97,31 +103,39 @@ export default function index() {
           </Box>
 
           {/* CARDS */}
-          <Box gap="m">
-            <Box flexDirection="row" gap="m">
+          <Box gap="s">
+            <Box flexDirection="row" gap="s">
               <CardGeneric
                 label="PEDIDOS"
-                value={revenue?.companies?.[0]?.quantidadePedidos || 0}
+                value={formatDecimal(
+                  revenue?.companies?.[0]?.quantidadePedidos || 0,
+                )}
+                loading={isLoading}
               />
 
               <CardGeneric
                 label="PEDIDOS CANCELADOS"
-                value={revenue?.companies?.[0]?.quantidadeCancelados || 0}
+                value={formatDecimal(
+                  revenue?.companies?.[0]?.quantidadeCancelados || 0,
+                )}
+                loading={isLoading}
               />
             </Box>
-            <Box flexDirection="row" gap="m">
+            <Box flexDirection="row" gap="s">
               <CardGeneric
                 label="FATURAMENTO"
                 value={formatCurrency(
                   revenue?.companies?.[0]?.totalFaturamento || 0,
                 )}
+                loading={isLoading}
               />
 
               <CardGeneric
-                label="VALOR CANCELADO"
+                label="FATURAMENTO CANCELADO"
                 value={formatCurrency(
                   revenue?.companies?.[0]?.totalCancelado || 0,
                 )}
+                loading={isLoading}
               />
             </Box>
           </Box>
@@ -134,63 +148,11 @@ export default function index() {
 
             {data?.marketplaces?.map((marketplace: string, index: number) => {
               return (
-                <TouchableOpacityBox
-                  onPress={() =>
-                    router.push({
-                      pathname: "/(stack)/marketplaceDetails",
-                      params: { marketplace },
-                    })
-                  }
+                <MarketplaceSelected
+                  rangeSelected={rangeSelected}
                   key={index}
-                  gap="m"
-                  flex={1}
-                  borderWidth={0.3}
-                  borderRadius="m"
-                  borderColor="mutedForeground"
-                  padding="m"
-                  marginTop="s"
-                  flexDirection="row"
-                  bg="card"
-                >
-                  <Box
-                    bg="container"
-                    borderRadius="s"
-                    padding="s"
-                    justifyContent="center"
-                  >
-                    <Image
-                      resizeMode="contain"
-                      source={
-                        marketplaces?.[marketplace as keyof typeof marketplaces]
-                          .logo
-                      }
-                      style={{ width: 50, height: 20 }}
-                    />
-                  </Box>
-
-                  <Box flex={1}>
-                    <Text>
-                      {
-                        marketplaces?.[marketplace as keyof typeof marketplaces]
-                          .name
-                      }
-                    </Text>
-                    <Text fontSize={12}>2 lojas</Text>
-                  </Box>
-
-                  <Box justifyContent="flex-end">
-                    <Text fontWeight={"bold"} fontSize={12}>
-                      R$ 1.000,00
-                    </Text>
-                    <Text fontSize={10}>121 Pedidos</Text>
-                  </Box>
-                  <Box justifyContent="center">
-                    <ChevronRight
-                      size={18}
-                      color={theme.colors.mutedForeground}
-                    />
-                  </Box>
-                </TouchableOpacityBox>
+                  marketplace={marketplace}
+                />
               );
             })}
           </Box>
