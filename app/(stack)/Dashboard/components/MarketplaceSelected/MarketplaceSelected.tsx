@@ -4,6 +4,7 @@ import { marketplaces } from "@/constants/marketplaces";
 import theme from "@/constants/theme";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { formatDecimal } from "@/utils/formatDecimal";
 import { router } from "expo-router";
 import { ChevronRight } from "lucide-react-native";
 import React from "react";
@@ -36,9 +37,7 @@ export default function MarketplaceSelected({
       }
       gap="m"
       flex={1}
-      borderWidth={0.3}
       borderRadius="m"
-      borderColor="mutedForeground"
       padding="m"
       marginTop="s"
       flexDirection="row"
@@ -59,11 +58,14 @@ export default function MarketplaceSelected({
         <Text fontSize={12}>2 lojas</Text>
       </Box>
 
-      <Box justifyContent="flex-end">
+      <Box justifyContent="center" gap="xs" alignItems="flex-end">
         <Text fontWeight={"bold"} fontSize={12}>
           R$ {formatCurrency(revenue?.companies?.[0]?.totalFaturamento || 0)}
         </Text>
-        <Text fontSize={10}>121 Pedidos</Text>
+        <Text color="mutedForeground" fontSize={10}>
+          {formatDecimal(revenue?.companies?.[0]?.quantidadePedidos || 0)}{" "}
+          Pedidos
+        </Text>
       </Box>
       <Box justifyContent="center">
         <ChevronRight size={18} color={theme.colors.mutedForeground} />

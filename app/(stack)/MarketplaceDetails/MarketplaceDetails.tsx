@@ -1,17 +1,32 @@
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
+import RangeSelect from "@/components/RangeSelect/RangeSelect";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import { TouchableOpacityBox } from "@/components/TouchableOpacityBox/TouchableOpacityBox";
 import { marketplaces } from "@/constants/marketplaces";
 import theme from "@/constants/theme";
 import { useGetIntegrations } from "@/hooks/useGetIntegrations";
+import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
+import { formatCurrency } from "@/utils/formatCurrency";
+import { formatDecimal } from "@/utils/formatDecimal";
+import { dateRange } from "@/utils/selectDate";
 import { useLocalSearchParams } from "expo-router";
 import { ChevronRight } from "lucide-react-native";
+import { useState } from "react";
 import { Image, ScrollView } from "react-native";
 
 export default function MarketplaceDetails() {
   const params = useLocalSearchParams();
-
+  const [rangeSelected, setRangeSelected] = useState({
+    from: dateRange[2].from,
+    to: dateRange[2].to,
+    label: dateRange[2].label,
+  });
   const { data } = useGetIntegrations(params.marketplace as string);
+  const { revenue } = useGetOrdersRevenue({
+    dataInicial: rangeSelected.from,
+    dataFinal: rangeSelected.to,
+    marketplace: params.marketplace as string,
+  });
 
   return (
     <Box bg="background" flex={1} padding="m">
@@ -29,15 +44,42 @@ export default function MarketplaceDetails() {
           <Text fontSize={12}>{data?.integracoes?.length} Lojas</Text>
         </Box>
 
+        <Box mb="m">
+          <RangeSelect
+            rangeSelected={rangeSelected}
+            setRangeSelected={setRangeSelected}
+          />
+        </Box>
+
         <Box gap="m">
           <Box flexDirection="row" gap="m">
-            <CardGeneric label="FATURAMENTO" value="R$ 1.000,00" />
-            <CardGeneric label="PEDIDOS" value="R$ 500,00" />
+            <CardGeneric
+              label="PEDIDOS"
+              value={formatDecimal(
+                revenue?.companies?.[0]?.quantidadePedidos || 0,
+              )}
+            />
+            <CardGeneric
+              label="PEDIDOS CANCELADOS"
+              value={formatCurrency(
+                revenue?.companies?.[0]?.quantidadeCancelados || 0,
+              )}
+            />
           </Box>
 
           <Box flexDirection="row" gap="m">
-            <CardGeneric label="TICKET MÉDIO" value="R$ 1.000,00" />
-            <CardGeneric label="LOJAS" value="R$ 500,00" />
+            <CardGeneric
+              label="FATURAMENTO"
+              value={formatCurrency(
+                revenue?.companies?.[0]?.totalFaturamento || 0,
+              )}
+            />
+            <CardGeneric
+              label="FATURAMENTO CANCELADO"
+              value={formatCurrency(
+                revenue?.companies?.[0]?.totalCancelado || 0,
+              )}
+            />
           </Box>
         </Box>
 
@@ -52,9 +94,7 @@ export default function MarketplaceDetails() {
                 key={index}
                 gap="m"
                 flex={1}
-                borderWidth={0.3}
                 borderRadius="m"
-                borderColor="mutedForeground"
                 padding="m"
                 marginTop="s"
                 flexDirection="row"

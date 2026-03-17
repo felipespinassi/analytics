@@ -1,8 +1,6 @@
-import { BarChartComponent } from "@/components/BarChart/BarChart";
-import { BottomSheetCalendar } from "@/components/CalendarBottomSheet/CalendarBottomSheet";
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
+import RangeSelect from "@/components/RangeSelect/RangeSelect";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
-import { TouchableOpacityBox } from "@/components/TouchableOpacityBox/TouchableOpacityBox";
 import theme from "@/constants/theme";
 import { useGetMarketplaces } from "@/hooks/useGetMarketplaces";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
@@ -16,8 +14,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MarketplaceSelected from "./components/MarketplaceSelected/MarketplaceSelected";
 
 export default function index() {
-  const [isOpen, setIsOpen] = useState(false);
-
   const [rangeSelected, setRangeSelected] = useState({
     from: dateRange[2].from,
     to: dateRange[2].to,
@@ -51,42 +47,10 @@ export default function index() {
 
           {/* FILTROS */}
 
-          <Box flexDirection="row" gap="s">
-            {dateRange.map((day, index) => {
-              return (
-                <TouchableOpacityBox
-                  key={index}
-                  paddingHorizontal="m"
-                  paddingVertical="s"
-                  backgroundColor={
-                    rangeSelected.label === day.label ? "primary" : "secondary"
-                  }
-                  borderRadius="l"
-                  onPress={() => {
-                    setRangeSelected(day);
-                  }}
-                >
-                  <Text fontSize={12} fontWeight={"semibold"}>
-                    {day.label}
-                  </Text>
-                </TouchableOpacityBox>
-              );
-            })}
-
-            <TouchableOpacityBox
-              paddingHorizontal="m"
-              paddingVertical="s"
-              backgroundColor={"secondary"}
-              borderRadius="l"
-              onPress={() => {
-                setIsOpen(true);
-              }}
-            >
-              <Text fontSize={12} fontWeight={"semibold"}>
-                Personalizado
-              </Text>
-            </TouchableOpacityBox>
-          </Box>
+          <RangeSelect
+            rangeSelected={rangeSelected}
+            setRangeSelected={setRangeSelected}
+          />
 
           {/* RESUMO DO DIA  */}
           <Box
@@ -156,24 +120,16 @@ export default function index() {
               );
             })}
           </Box>
-
+          {/* 
           <Box marginVertical="m">
             <Text marginBottom="m" fontWeight={"bold"} color="mutedForeground">
               FATURAMENTO DOS ÚLTIMOS 6 MESES
             </Text>
 
             <BarChartComponent />
-          </Box>
+          </Box> */}
         </ScrollView>
       </Box>
-
-      {isOpen && (
-        <BottomSheetCalendar
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          setRangeSelected={setRangeSelected}
-        />
-      )}
     </GestureHandlerRootView>
   );
 }
