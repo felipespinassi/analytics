@@ -11,13 +11,13 @@ import { Calendar as CalendarIcon } from "lucide-react-native";
 import React, { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import MarketplaceSelected from "./components/MarketplaceSelected/MarketplaceSelected";
+import MarketplaceItem from "./components/MarketplaceItem/MarketplaceItem";
 
 export default function index() {
   const [rangeSelected, setRangeSelected] = useState({
-    from: dateRange[2].from,
-    to: dateRange[2].to,
-    label: dateRange[2].label,
+    from: dateRange[3].from,
+    to: dateRange[3].to,
+    label: dateRange[3].label,
   });
 
   const { data } = useGetMarketplaces();
@@ -112,7 +112,7 @@ export default function index() {
 
             {data?.marketplaces?.map((marketplace: string, index: number) => {
               return (
-                <MarketplaceSelected
+                <MarketplaceItem
                   rangeSelected={rangeSelected}
                   key={index}
                   marketplace={marketplace}

@@ -10,10 +10,12 @@ import { ChevronRight } from "lucide-react-native";
 import React from "react";
 import { Image } from "react-native";
 
-export default function MarketplaceSelected({
+export default function IntegrationItem({
+  integracao,
   marketplace,
   rangeSelected,
 }: {
+  integracao: any;
   marketplace: string;
   rangeSelected: {
     from: string;
@@ -24,15 +26,17 @@ export default function MarketplaceSelected({
   const { revenue } = useGetOrdersRevenue({
     dataInicial: rangeSelected.from,
     dataFinal: rangeSelected.to,
-    marketplace,
+    integracao: integracao.id as string,
   });
 
   return (
     <TouchableOpacityBox
       onPress={() =>
         router.push({
-          pathname: "/(stack)/MarketplaceDetails/MarketplaceDetails",
-          params: { marketplace },
+          pathname: "/(stack)/IntegrationDetails/IntegrationDetails",
+          params: {
+            integracao: JSON.stringify(integracao),
+          },
         })
       }
       gap="m"
@@ -52,17 +56,15 @@ export default function MarketplaceSelected({
       </Box>
 
       <Box flex={1}>
-        <Text>
-          {marketplaces?.[marketplace as keyof typeof marketplaces].name}
-        </Text>
+        <Text fontSize={14}>{integracao?.nome}</Text>
         <Text fontSize={12}>2 lojas</Text>
       </Box>
 
       <Box justifyContent="center" gap="xs" alignItems="flex-end">
         <Text fontWeight={"bold"} fontSize={12}>
-          R$ {formatCurrency(revenue?.companies?.[0]?.totalFaturamento || 0)}
+          {formatCurrency(revenue?.companies?.[0]?.totalFaturamento || 0)}
         </Text>
-        <Text color="mutedForeground" fontSize={10}>
+        <Text fontSize={10} color="mutedForeground">
           {formatDecimal(revenue?.companies?.[0]?.quantidadePedidos || 0)}{" "}
           Pedidos
         </Text>
