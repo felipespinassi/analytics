@@ -1,4 +1,5 @@
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
+import Loading from "@/components/Loading/Loading";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import type { Theme } from "@/constants/theme";
@@ -32,10 +33,12 @@ export default function IntegrationDetails() {
     integracao: integracao.id as string,
   });
 
-  const { data: ordersStatus } = useGetOrdersStatus({
-    integracao: integracao.id as string,
-  });
-
+  const { data: ordersStatus, isLoading: isOrdersStatusLoading } =
+    useGetOrdersStatus({
+      integracao: integracao.id as string,
+      dataInicial: rangeSelected.from,
+      dataFinal: rangeSelected.to,
+    });
   const statusStyle = {
     pendente: { name: "Pendente", color: "statusPendente" },
     expedir: { name: "Expedir", color: "statusExpedir" },
@@ -101,39 +104,43 @@ export default function IntegrationDetails() {
             </Text>
           </Box>
 
-          <Box gap="s">
-            {ordersStatus?.pedidos?.map((pedido: any, index: number) => {
-              return (
-                <Box
-                  backgroundColor="cardBackground"
-                  borderRadius="s"
-                  flex={1}
-                  padding="s"
-                  justifyContent="space-between"
-                  flexDirection="row"
-                  key={index}
-                >
-                  <Text
-                    color={
-                      statusStyle[pedido.status as keyof typeof statusStyle]
-                        ?.color as StatusColor
-                    }
+          {isOrdersStatusLoading ? (
+            <Loading />
+          ) : (
+            <Box gap="s">
+              {ordersStatus?.pedidos?.map((pedido: any, index: number) => {
+                return (
+                  <Box
+                    backgroundColor="cardBackground"
+                    borderRadius="s"
+                    flex={1}
+                    padding="s"
+                    justifyContent="space-between"
+                    flexDirection="row"
+                    key={index}
                   >
-                    {statusStyle[pedido.status as keyof typeof statusStyle]
-                      ?.name || pedido.status}
-                  </Text>
-                  <Text
-                    color={
-                      statusStyle[pedido.status as keyof typeof statusStyle]
-                        ?.color as StatusColor
-                    }
-                  >
-                    {pedido.total}
-                  </Text>
-                </Box>
-              );
-            })}
-          </Box>
+                    <Text
+                      color={
+                        statusStyle[pedido.status as keyof typeof statusStyle]
+                          ?.color as StatusColor
+                      }
+                    >
+                      {statusStyle[pedido.status as keyof typeof statusStyle]
+                        ?.name || pedido.status}
+                    </Text>
+                    <Text
+                      color={
+                        statusStyle[pedido.status as keyof typeof statusStyle]
+                          ?.color as StatusColor
+                      }
+                    >
+                      {pedido.total}
+                    </Text>
+                  </Box>
+                );
+              })}
+            </Box>
+          )}
         </Box>
       </ScrollView>
     </Box>

@@ -1,17 +1,17 @@
 import { fetcher } from "@/utils/fetcher";
-import dayjs from "dayjs";
 import useSWR from "swr";
 
 export function useGetOrdersStatus({
   marketplace,
   integracao,
+  dataInicial,
+  dataFinal,
 }: {
   marketplace?: string;
   integracao?: string;
+  dataInicial: string;
+  dataFinal: string;
 }) {
-  const dataInicial = dayjs().startOf("day").format("YYYY-MM-DDTHH:MM:ss");
-  const dataFinal = dayjs().endOf("day").format("YYYY-MM-DDTHH:MM:ss");
-
   const { data, isLoading } = useSWR(
     marketplace
       ? `https://api.expedy.com.br/mobile/status?tipo=marketplace&marketplace=${marketplace}&dataInicial=${dataInicial}&dataFinal=${dataFinal}`

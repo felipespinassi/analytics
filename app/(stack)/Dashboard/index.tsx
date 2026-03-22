@@ -1,4 +1,5 @@
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
+import Loading from "@/components/Loading/Loading";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import theme from "@/constants/theme";
@@ -21,7 +22,7 @@ export default function index() {
     label: dateRange[3].label,
   });
 
-  const { data } = useGetMarketplaces();
+  const { data, isLoading: isMarketplacesLoading } = useGetMarketplaces();
   const { revenue, isLoading } = useGetOrdersRevenue({
     dataInicial: rangeSelected.from,
     dataFinal: rangeSelected.to,
@@ -121,15 +122,23 @@ export default function index() {
               MARKETPLACES
             </Text>
 
-            {data?.marketplaces?.map((marketplace: string, index: number) => {
-              return (
-                <MarketplaceItem
-                  rangeSelected={rangeSelected}
-                  key={index}
-                  marketplace={marketplace}
-                />
-              );
-            })}
+            {isMarketplacesLoading ? (
+              <Loading />
+            ) : (
+              <>
+                {data?.marketplaces?.map(
+                  (marketplace: string, index: number) => {
+                    return (
+                      <MarketplaceItem
+                        rangeSelected={rangeSelected}
+                        key={index}
+                        marketplace={marketplace}
+                      />
+                    );
+                  },
+                )}
+              </>
+            )}
           </Box>
           {/* 
           <Box marginVertical="m">

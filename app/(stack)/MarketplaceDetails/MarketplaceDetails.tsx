@@ -1,4 +1,5 @@
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
+import Loading from "@/components/Loading/Loading";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import { marketplaces } from "@/constants/marketplaces";
@@ -20,7 +21,9 @@ export default function MarketplaceDetails() {
     to: dateRange[3].to,
     label: dateRange[3].label,
   });
-  const { data } = useGetIntegrations(params.marketplace as string);
+  const { data, isLoading: isIntegrationsLoading } = useGetIntegrations(
+    params.marketplace as string,
+  );
   const { revenue } = useGetOrdersRevenue({
     dataInicial: rangeSelected.from,
     dataFinal: rangeSelected.to,
@@ -99,16 +102,22 @@ export default function MarketplaceDetails() {
             MARKETPLACES
           </Text>
 
-          {data?.integracoes?.map((integracao: any, index: number) => {
-            return (
-              <IntegrationItem
-                rangeSelected={rangeSelected}
-                key={index}
-                integracao={integracao}
-                marketplace={params.marketplace as string}
-              />
-            );
-          })}
+          {isIntegrationsLoading ? (
+            <Loading />
+          ) : (
+            <>
+              {data?.integracoes?.map((integracao: any, index: number) => {
+                return (
+                  <IntegrationItem
+                    rangeSelected={rangeSelected}
+                    key={index}
+                    integracao={integracao}
+                    marketplace={params.marketplace as string}
+                  />
+                );
+              })}
+            </>
+          )}
         </Box>
       </ScrollView>
     </Box>
