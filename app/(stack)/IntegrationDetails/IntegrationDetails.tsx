@@ -1,14 +1,18 @@
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
+import type { Theme } from "@/constants/theme";
 import { useGetDailyOrdersRevenue } from "@/hooks/useGetDailyOrdersRevenue";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
+import { useGetOrdersStatus } from "@/hooks/useGetOrdersStatus";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDecimal } from "@/utils/formatDecimal";
 import { dateRange } from "@/utils/selectDate";
 import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { ScrollView } from "react-native";
+
+type StatusColor = keyof Theme["colors"];
 
 export default function IntegrationDetails() {
   const params = useLocalSearchParams();
@@ -27,6 +31,19 @@ export default function IntegrationDetails() {
   const { data: dailyRevenue } = useGetDailyOrdersRevenue({
     integracao: integracao.id as string,
   });
+
+  const { data: ordersStatus } = useGetOrdersStatus({
+    integracao: integracao.id as string,
+  });
+
+  const statusStyle = {
+    pendente: { name: "Pendente", color: "statusPendente" },
+    expedir: { name: "Expedir", color: "statusExpedir" },
+    emseparacao: { name: "Em Separação", color: "statusEmSeparacao" },
+    completo: { name: "Completo", color: "statusCompleto" },
+    cancelado: { name: "Cancelado", color: "statusCancelado" },
+    aprovado: { name: "Aprovado", color: "statusAprovado" },
+  };
   return (
     <Box bg="background" flex={1} padding="m">
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -74,6 +91,48 @@ export default function IntegrationDetails() {
                   : revenue?.companies?.[0]?.totalCancelado || 0,
               )}
             />
+          </Box>
+        </Box>
+
+        <Box>
+          <Box>
+            <Text color="mutedForeground" marginVertical="m">
+              Total de pedidos por status
+            </Text>
+          </Box>
+
+          <Box gap="s">
+            {ordersStatus?.pedidos?.map((pedido: any, index: number) => {
+              return (
+                <Box
+                  backgroundColor="cardBackground"
+                  borderRadius="s"
+                  flex={1}
+                  padding="s"
+                  justifyContent="space-between"
+                  flexDirection="row"
+                  key={index}
+                >
+                  <Text
+                    color={
+                      statusStyle[pedido.status as keyof typeof statusStyle]
+                        ?.color as StatusColor
+                    }
+                  >
+                    {statusStyle[pedido.status as keyof typeof statusStyle]
+                      ?.name || pedido.status}
+                  </Text>
+                  <Text
+                    color={
+                      statusStyle[pedido.status as keyof typeof statusStyle]
+                        ?.color as StatusColor
+                    }
+                  >
+                    {pedido.total}
+                  </Text>
+                </Box>
+              );
+            })}
           </Box>
         </Box>
       </ScrollView>

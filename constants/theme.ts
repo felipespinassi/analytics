@@ -17,6 +17,13 @@ const palette = {
   chart4: "hsl(280 60% 55%)",
   chart5: "hsl(350 70% 55%)",
   container: "#2c2f33",
+  statusPendente: "#a1a1a1",
+  statusExpedir: "#f3a479",
+  statusEmSeparacao: "#F59E0B",
+  statusCompleto: "#10B981",
+  statusCancelado: "#EF4444",
+  statusNaoCorrelacionado: "#6B7280",
+  statusAprovado: "#0cafaf",
 };
 
 const theme = createTheme({

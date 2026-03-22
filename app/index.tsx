@@ -1,6 +1,7 @@
 import Button from "@/components/Button/Button";
 import { Input } from "@/components/Input/Input";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
+import theme from "@/constants/theme";
 import { createAccess_token } from "@/storage/createAccessToken";
 import { ACCESS_TOKEN } from "@/storage/storageConfig";
 import { useRouter } from "expo-router";
@@ -8,7 +9,12 @@ import * as SecureStore from "expo-secure-store";
 import { ChartColumn } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Alert } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
 
 interface Dataprops {
   companyCode: string;
@@ -26,11 +32,7 @@ export default function index() {
     try {
       const response = await fetch("https://api.expedy.com.br/auth", {
         method: "POST",
-        body: JSON.stringify({
-          companyCode: values.companyCode,
-          login: values.login,
-          password: values.password,
-        }),
+        body: JSON.stringify(values),
         headers: {
           "Content-Type": "application/json",
         },
@@ -64,45 +66,58 @@ export default function index() {
     register("login");
     register("password");
   }, []);
+
   return (
-    <Box bg="background" flex={1} padding="l" gap="xxxl">
-      <Box alignItems="center" gap="m" mt="xxxl">
-        <Box bg="primary" padding="m" borderRadius="s">
-          <ChartColumn size={30} />
-        </Box>
-
-        <Text fontSize={24} fontWeight={"bold"}>
-          Dashboard Analytics
-        </Text>
-      </Box>
-
-      <Box gap="l">
-        <Input
-          label="Código"
-          placeholder="Informe o código de acesso"
-          value=""
-          onChangeText={(text) => setValue("companyCode", text)}
-        />
-        <Input
-          label="E-mail"
-          placeholder="Informe seu e-mail"
-          value=""
-          onChangeText={(text) => setValue("login", text)}
-        />
-        <Input
-          label="Senha"
-          placeholder="Informe sua senha"
-          value=""
-          onChangeText={(text) => setValue("password", text)}
-        />
-      </Box>
-      <Button
-        variant="primary"
-        onPress={handleSubmit(onSubmit)}
-        loading={loading}
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: theme.colors.background }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={40}
+    >
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
       >
-        Entrar
-      </Button>
-    </Box>
+        <Box bg="background" flex={1} padding="l" gap="xxxl">
+          <Box alignItems="center" gap="m" mt="xxxl">
+            <Box bg="primary" padding="m" borderRadius="s">
+              <ChartColumn size={30} />
+            </Box>
+
+            <Text fontSize={24} fontWeight={"bold"}>
+              Dashboard Analytics
+            </Text>
+          </Box>
+
+          <Box gap="l">
+            <Input
+              label="Código"
+              value=""
+              placeholder="Informe o código de acesso"
+              onChangeText={(text) => setValue("companyCode", text)}
+            />
+            <Input
+              value=""
+              label="E-mail"
+              placeholder="Informe seu e-mail"
+              onChangeText={(text) => setValue("login", text)}
+            />
+            <Input
+              value=""
+              label="Senha"
+              placeholder="Informe sua senha"
+              onChangeText={(text) => setValue("password", text)}
+            />
+          </Box>
+
+          <Button
+            variant="primary"
+            onPress={handleSubmit(onSubmit)}
+            loading={loading}
+          >
+            Entrar
+          </Button>
+        </Box>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
