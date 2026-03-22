@@ -2,6 +2,7 @@ import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import { TouchableOpacityBox } from "@/components/TouchableOpacityBox/TouchableOpacityBox";
 import { marketplaces } from "@/constants/marketplaces";
 import theme from "@/constants/theme";
+import { useGetDailyOrdersRevenue } from "@/hooks/useGetDailyOrdersRevenue";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDecimal } from "@/utils/formatDecimal";
@@ -25,6 +26,10 @@ export default function MarketplaceItem({
     dataInicial: rangeSelected.from,
     dataFinal: rangeSelected.to,
     marketplace,
+  });
+
+  const { data: dailyRevenue } = useGetDailyOrdersRevenue({
+    marketplace: marketplace,
   });
 
   return (
@@ -60,10 +65,18 @@ export default function MarketplaceItem({
 
       <Box justifyContent="center" gap="xs" alignItems="flex-end">
         <Text fontWeight={"bold"} fontSize={12}>
-          {formatCurrency(revenue?.companies?.[0]?.totalFaturamento || 0)}
+          {formatCurrency(
+            rangeSelected.label === "Hoje"
+              ? dailyRevenue?.totalFaturamento || 0
+              : revenue?.companies?.[0]?.totalFaturamento || 0,
+          )}
         </Text>
         <Text color="mutedForeground" fontSize={10}>
-          {formatDecimal(revenue?.companies?.[0]?.quantidadePedidos || 0)}{" "}
+          {formatDecimal(
+            rangeSelected.label === "Hoje"
+              ? dailyRevenue?.quantidadePedidos || 0
+              : revenue?.companies?.[0]?.quantidadePedidos || 0,
+          )}{" "}
           Pedidos
         </Text>
       </Box>

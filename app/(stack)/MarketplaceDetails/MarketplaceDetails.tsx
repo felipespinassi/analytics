@@ -2,6 +2,7 @@ import CardGeneric from "@/components/CardGeneric/CardGeneric";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import { marketplaces } from "@/constants/marketplaces";
+import { useGetDailyOrdersRevenue } from "@/hooks/useGetDailyOrdersRevenue";
 import { useGetIntegrations } from "@/hooks/useGetIntegrations";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -23,6 +24,10 @@ export default function MarketplaceDetails() {
   const { revenue } = useGetOrdersRevenue({
     dataInicial: rangeSelected.from,
     dataFinal: rangeSelected.to,
+    marketplace: params.marketplace as string,
+  });
+
+  const { data: dailyRevenue } = useGetDailyOrdersRevenue({
     marketplace: params.marketplace as string,
   });
 
@@ -54,13 +59,17 @@ export default function MarketplaceDetails() {
             <CardGeneric
               label="PEDIDOS"
               value={formatDecimal(
-                revenue?.companies?.[0]?.quantidadePedidos || 0,
+                rangeSelected.label === "Hoje"
+                  ? dailyRevenue?.quantidadePedidos || 0
+                  : revenue?.companies?.[0]?.quantidadePedidos || 0,
               )}
             />
             <CardGeneric
               label="PEDIDOS CANCELADOS"
               value={formatCurrency(
-                revenue?.companies?.[0]?.quantidadeCancelados || 0,
+                rangeSelected.label === "Hoje"
+                  ? dailyRevenue?.quantidadeCancelados || 0
+                  : revenue?.companies?.[0]?.quantidadeCancelados || 0,
               )}
             />
           </Box>
@@ -69,13 +78,17 @@ export default function MarketplaceDetails() {
             <CardGeneric
               label="FATURAMENTO"
               value={formatCurrency(
-                revenue?.companies?.[0]?.totalFaturamento || 0,
+                rangeSelected.label === "Hoje"
+                  ? dailyRevenue?.totalFaturamento || 0
+                  : revenue?.companies?.[0]?.totalFaturamento || 0,
               )}
             />
             <CardGeneric
               label="FATURAMENTO CANCELADO"
               value={formatCurrency(
-                revenue?.companies?.[0]?.totalCancelado || 0,
+                rangeSelected.label === "Hoje"
+                  ? dailyRevenue?.totalCancelado || 0
+                  : revenue?.companies?.[0]?.totalCancelado || 0,
               )}
             />
           </Box>

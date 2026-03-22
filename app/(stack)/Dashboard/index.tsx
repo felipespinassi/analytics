@@ -27,7 +27,7 @@ export default function index() {
     dataFinal: rangeSelected.to,
   });
 
-  const { data: dailyRevenue } = useGetDailyOrdersRevenue();
+  const { data: dailyRevenue } = useGetDailyOrdersRevenue({});
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -77,7 +77,7 @@ export default function index() {
                 value={formatDecimal(
                   rangeSelected.label === "Hoje"
                     ? dailyRevenue?.quantidadePedidos || 0
-                    : revenue?.companies?.[0]?.quantidade || 0,
+                    : revenue?.companies?.[0]?.quantidadePedidos || 0,
                 )}
                 loading={isLoading}
               />
@@ -86,7 +86,7 @@ export default function index() {
                 label="PEDIDOS CANCELADOS"
                 value={formatDecimal(
                   rangeSelected.label === "Hoje"
-                    ? dailyRevenue?.companies?.[0]?.quantidadeCancelados || 0
+                    ? dailyRevenue?.quantidadeCancelados || 0
                     : revenue?.companies?.[0]?.quantidadeCancelados || 0,
                 )}
                 loading={isLoading}
