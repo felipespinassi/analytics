@@ -2,13 +2,16 @@ import CardGeneric from "@/components/CardGeneric/CardGeneric";
 import Loading from "@/components/Loading/Loading";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
+import { TouchableOpacityBox } from "@/components/TouchableOpacityBox/TouchableOpacityBox";
 import theme from "@/constants/theme";
 import { useGetDailyOrdersRevenue } from "@/hooks/useGetDailyOrdersRevenue";
 import { useGetMarketplaces } from "@/hooks/useGetMarketplaces";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
+import { useGetProductsRanking } from "@/hooks/useGetProductsRanking";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDecimal } from "@/utils/formatDecimal";
 import { dateRange } from "@/utils/selectDate";
+import dayjs from "dayjs";
 import { Calendar as CalendarIcon } from "lucide-react-native";
 import React, { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
@@ -16,6 +19,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MarketplaceItem from "./components/MarketplaceItem/MarketplaceItem";
 
 export default function index() {
+  const [currentTab, setCurrentTab] = useState("produtos");
   const [rangeSelected, setRangeSelected] = useState({
     from: dateRange[3].from,
     to: dateRange[3].to,
@@ -29,6 +33,11 @@ export default function index() {
   });
 
   const { data: dailyRevenue } = useGetDailyOrdersRevenue({});
+  const { data: productsRanking, isLoading: isProductsRankingLoading } =
+    useGetProductsRanking({
+      dataInicial: dayjs(rangeSelected.from).format("YYYY-MM-DD"),
+      dataFinal: dayjs(rangeSelected.to).format("YYYY-MM-DD"),
+    });
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -117,25 +126,102 @@ export default function index() {
           </Box>
 
           {/* MARKETPLACES */}
-          <Box mt="l">
-            <Text color="mutedForeground" fontSize={14} fontWeight={"bold"}>
-              MARKETPLACES
-            </Text>
 
+          <Box mt="l">
             {isMarketplacesLoading ? (
               <Loading />
             ) : (
               <>
-                {data?.marketplaces?.map(
-                  (marketplace: string, index: number) => {
-                    return (
-                      <MarketplaceItem
-                        rangeSelected={rangeSelected}
-                        key={index}
-                        marketplace={marketplace}
-                      />
-                    );
-                  },
+                <Box
+                  flexDirection="row"
+                  backgroundColor="card"
+                  borderRadius="s"
+                >
+                  <TouchableOpacityBox
+                    paddingHorizontal="s"
+                    paddingVertical="xs"
+                    borderRadius="s"
+                    backgroundColor={
+                      currentTab === "marketplaces" ? "primary" : "card"
+                    }
+                    alignItems="center"
+                    flex={1}
+                    onPress={() => setCurrentTab("marketplaces")}
+                  >
+                    <Text
+                      color={
+                        currentTab === "marketplaces"
+                          ? "foreground"
+                          : "mutedForeground"
+                      }
+                      fontSize={14}
+                      fontWeight={"bold"}
+                    >
+                      Marketplaces
+                    </Text>
+                  </TouchableOpacityBox>
+
+                  <TouchableOpacityBox
+                    backgroundColor={
+                      currentTab === "produtos" ? "primary" : "card"
+                    }
+                    paddingHorizontal="s"
+                    paddingVertical="xs"
+                    borderRadius="s"
+                    alignItems="center"
+                    flex={1}
+                    onPress={() => setCurrentTab("produtos")}
+                  >
+                    <Text
+                      color={
+                        currentTab === "produtos"
+                          ? "foreground"
+                          : "mutedForeground"
+                      }
+                      fontSize={14}
+                      fontWeight={"bold"}
+                    >
+                      Produtos
+                    </Text>
+                  </TouchableOpacityBox>
+                </Box>
+                {currentTab === "marketplaces" ? (
+                  <>
+                    {data?.marketplaces?.map(
+                      (marketplace: string, index: number) => {
+                        return (
+                          <MarketplaceItem
+                            rangeSelected={rangeSelected}
+                            key={index}
+                            marketplace={marketplace}
+                          />
+                        );
+                      },
+                    )}
+                  </>
+                ) : (
+                  <Box gap="s" mt="s">
+                    {productsRanking?.companies?.[0].produtos.map(
+                      (produto: any, index: number) => {
+                        return (
+                          <Box
+                            justifyContent="space-between"
+                            borderRadius="s"
+                            key={index}
+                            padding="m"
+                            backgroundColor="card"
+                            flexDirection="row"
+                          >
+                            <Box>
+                              <Text fontSize={14}>{produto.sku}</Text>
+                            </Box>
+
+                            <Text>{produto.valorTotal}</Text>
+                          </Box>
+                        );
+                      },
+                    )}
+                  </Box>
                 )}
               </>
             )}
