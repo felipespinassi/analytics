@@ -62,7 +62,6 @@ export default function IntegrationItem({
 
       <Box flex={1}>
         <Text fontSize={14}>{integracao?.nome}</Text>
-        <Text fontSize={12}>2 lojas</Text>
       </Box>
 
       <Box justifyContent="center" gap="xs" alignItems="flex-end">

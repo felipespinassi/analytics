@@ -19,7 +19,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MarketplaceItem from "./components/MarketplaceItem/MarketplaceItem";
 
 export default function index() {
-  const [currentTab, setCurrentTab] = useState("produtos");
+  const [currentTab, setCurrentTab] = useState("marketplaces");
   const [rangeSelected, setRangeSelected] = useState({
     from: dateRange[3].from,
     to: dateRange[3].to,
@@ -201,22 +201,68 @@ export default function index() {
                   </>
                 ) : (
                   <Box gap="s" mt="s">
-                    {productsRanking?.companies?.[0].produtos.map(
+                    {productsRanking?.companies?.[0]?.produtos?.map(
                       (produto: any, index: number) => {
                         return (
                           <Box
-                            justifyContent="space-between"
                             borderRadius="s"
                             key={index}
                             padding="m"
                             backgroundColor="card"
-                            flexDirection="row"
+                            gap="s"
                           >
                             <Box>
-                              <Text fontSize={14}>{produto.sku}</Text>
+                              <Text fontSize={14} fontWeight="bold">
+                                {produto.productName}
+                              </Text>
+                              <Text fontSize={12} color="mutedForeground">
+                                SKU: {produto.sku}
+                              </Text>
                             </Box>
 
-                            <Text>{produto.valorTotal}</Text>
+                            <Box
+                              flexDirection="row"
+                              justifyContent="space-between"
+                            >
+                              <Text fontSize={12} color="mutedForeground">
+                                Vendida:{" "}
+                                {formatDecimal(
+                                  Number(produto.quantidadeVendida || 0),
+                                )}
+                              </Text>
+                              <Text fontSize={12} color="mutedForeground">
+                                Cancelada:{" "}
+                                {formatDecimal(
+                                  Number(produto.quantidadeCancelada || 0),
+                                )}
+                              </Text>
+                            </Box>
+
+                            <Box
+                              flexDirection="row"
+                              justifyContent="space-between"
+                            >
+                              <Text
+                                fontSize={13}
+                                fontWeight="bold"
+                                color="primary"
+                              >
+                                Total:{" "}
+                                {formatCurrency(
+                                  Number(produto.valorTotal || 0),
+                                )}
+                              </Text>
+                              <Text
+                                fontSize={13}
+                                fontWeight="bold"
+                                color="primary"
+                              >
+                                Preco medio:{" "}
+                                {formatCurrency(
+                                  Number(produto.precoMedio || 0),
+                                )}
+                              </Text>
+                            </Box>
                           </Box>
                         );
                       },

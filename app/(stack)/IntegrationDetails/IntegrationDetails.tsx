@@ -9,6 +9,7 @@ import { useGetOrdersStatus } from "@/hooks/useGetOrdersStatus";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDecimal } from "@/utils/formatDecimal";
 import { dateRange } from "@/utils/selectDate";
+import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { ScrollView } from "react-native";
@@ -36,8 +37,10 @@ export default function IntegrationDetails() {
   const { data: ordersStatus, isLoading: isOrdersStatusLoading } =
     useGetOrdersStatus({
       integracao: integracao.id as string,
-      dataInicial: rangeSelected.from,
-      dataFinal: rangeSelected.to,
+      dataInicial: dayjs(rangeSelected.from)
+        .startOf("day")
+        .format("YYYY-MM-DDTHH:MM:ss"),
+      dataFinal: dayjs(rangeSelected.to).endOf("day").format("YYYY-MM-DD"),
     });
   const statusStyle = {
     pendente: { name: "Pendente", color: "statusPendente" },

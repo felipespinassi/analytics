@@ -56,11 +56,10 @@ export default function MarketplaceItem({
         />
       </Box>
 
-      <Box flex={1}>
+      <Box flex={1} justifyContent="center">
         <Text>
           {marketplaces?.[marketplace as keyof typeof marketplaces].name}
         </Text>
-        <Text fontSize={12}>2 lojas</Text>
       </Box>
 
       <Box justifyContent="center" gap="xs" alignItems="flex-end">

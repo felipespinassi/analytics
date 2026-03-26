@@ -99,7 +99,7 @@ export default function MarketplaceDetails() {
 
         <Box mt="l">
           <Text color="mutedForeground" fontSize={14} fontWeight={"bold"}>
-            MARKETPLACES
+            INTEGRAÇÕES
           </Text>
 
           {isIntegrationsLoading ? (
