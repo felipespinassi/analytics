@@ -52,14 +52,16 @@ export default function MarketplaceItem({
       <Box bg="container" borderRadius="s" padding="s" justifyContent="center">
         <Image
           resizeMode="contain"
-          source={marketplaces?.[marketplace as keyof typeof marketplaces].logo}
+          source={
+            marketplaces?.[marketplace as keyof typeof marketplaces]?.logo
+          }
           style={{ width: 50, height: 20 }}
         />
       </Box>
 
       <Box flex={1} justifyContent="center">
         <Text>
-          {marketplaces?.[marketplace as keyof typeof marketplaces].name}
+          {marketplaces?.[marketplace as keyof typeof marketplaces]?.name}
         </Text>
       </Box>
 

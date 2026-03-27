@@ -67,8 +67,8 @@ export const marketplaces = {
     name: "Shopify",
     logo: require("../assets/logos/shopify.png"),
   },
-  //   temu: {
-  //     name: "Temu",
-  //     logo: require("../assets/logos/temu.png"),
-  //   },
+  temu: {
+    name: "Temu",
+    logo: require("../assets/logos/temu.png"),
+  },
 };
