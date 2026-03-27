@@ -9,6 +9,7 @@ import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDecimal } from "@/utils/formatDecimal";
 import { dateRange } from "@/utils/selectDate";
+import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Image, ScrollView } from "react-native";
@@ -25,8 +26,8 @@ export default function MarketplaceDetails() {
     params.marketplace as string,
   );
   const { revenue } = useGetOrdersRevenue({
-    dataInicial: rangeSelected.from,
-    dataFinal: rangeSelected.to,
+    dataInicial: dayjs(rangeSelected.from).format("YYYY-MM-DD"),
+    dataFinal: dayjs(rangeSelected.to).format("YYYY-MM-DD"),
     marketplace: params.marketplace as string,
   });
 

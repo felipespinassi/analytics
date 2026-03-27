@@ -6,6 +6,7 @@ import { useGetDailyOrdersRevenue } from "@/hooks/useGetDailyOrdersRevenue";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDecimal } from "@/utils/formatDecimal";
+import dayjs from "dayjs";
 import { router } from "expo-router";
 import { ChevronRight } from "lucide-react-native";
 import React from "react";
@@ -25,8 +26,8 @@ export default function IntegrationItem({
   };
 }) {
   const { revenue } = useGetOrdersRevenue({
-    dataInicial: rangeSelected.from,
-    dataFinal: rangeSelected.to,
+    dataInicial: dayjs(rangeSelected.from).format("YYYY-MM-DD"),
+    dataFinal: dayjs(rangeSelected.to).format("YYYY-MM-DD"),
     integracao: integracao.id as string,
   });
 

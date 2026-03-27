@@ -8,13 +8,16 @@ import { useGetDailyOrdersRevenue } from "@/hooks/useGetDailyOrdersRevenue";
 import { useGetMarketplaces } from "@/hooks/useGetMarketplaces";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
 import { useGetProductsRanking } from "@/hooks/useGetProductsRanking";
+import { ACCESS_TOKEN, TOKEN_EXPIRE_TIME } from "@/storage/storageConfig";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDecimal } from "@/utils/formatDecimal";
 import { dateRange } from "@/utils/selectDate";
 import dayjs from "dayjs";
-import { Calendar as CalendarIcon } from "lucide-react-native";
+import { router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import { Calendar as CalendarIcon, LogOut } from "lucide-react-native";
 import React, { useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { Alert, ScrollView, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MarketplaceItem from "./components/MarketplaceItem/MarketplaceItem";
 
@@ -28,8 +31,8 @@ export default function index() {
 
   const { data, isLoading: isMarketplacesLoading } = useGetMarketplaces();
   const { revenue, isLoading } = useGetOrdersRevenue({
-    dataInicial: rangeSelected.from,
-    dataFinal: rangeSelected.to,
+    dataInicial: dayjs(rangeSelected.from).format("YYYY-MM-DD"),
+    dataFinal: dayjs(rangeSelected.to).format("YYYY-MM-DD"),
   });
 
   const { data: dailyRevenue } = useGetDailyOrdersRevenue({});
@@ -43,19 +46,55 @@ export default function index() {
     <GestureHandlerRootView style={styles.container}>
       <Box padding="m" flex={1}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Text paddingBottom="xs" fontSize={12}>
-            Olá, Vendedor 👋
-          </Text>
           <Box
-            mb="m"
-            justifyContent="space-between"
             flexDirection="row"
-            width={"auto"}
-            alignItems="center"
+            justifyContent="space-between"
+            alignItems="flex-start"
           >
-            <Text fontSize={20} fontWeight={"bold"}>
-              Painel de Vendas
-            </Text>
+            <Box>
+              <Text paddingBottom="xs" fontSize={12}>
+                Olá, Vendedor 👋
+              </Text>
+
+              <Box
+                mb="m"
+                justifyContent="space-between"
+                flexDirection="row"
+                width={"auto"}
+                alignItems="center"
+              >
+                <Text fontSize={20} fontWeight={"bold"}>
+                  Painel de Vendas
+                </Text>
+              </Box>
+            </Box>
+            <TouchableOpacityBox
+              marginRight="s"
+              onPress={async () => {
+                Alert.alert(
+                  "Sair",
+                  "Tem certeza que deseja sair?",
+                  [
+                    {
+                      text: "Cancelar",
+                      style: "cancel",
+                    },
+                    {
+                      text: "Sair",
+                      style: "destructive",
+                      onPress: async () => {
+                        await SecureStore.deleteItemAsync(ACCESS_TOKEN);
+                        await SecureStore.deleteItemAsync(TOKEN_EXPIRE_TIME);
+                        router.replace("/");
+                      },
+                    },
+                  ],
+                  { cancelable: true },
+                );
+              }}
+            >
+              <LogOut size={22} color={theme.colors.primary} />
+            </TouchableOpacityBox>
           </Box>
 
           {/* FILTROS */}

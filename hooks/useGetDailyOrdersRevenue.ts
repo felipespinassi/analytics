@@ -9,8 +9,14 @@ export function useGetDailyOrdersRevenue({
   marketplace?: string;
   integracao?: string;
 }) {
-  const dataInicial = dayjs().startOf("day").format("YYYY-MM-DDTHH:MM:ss");
-  const dataFinal = dayjs().endOf("day").format("YYYY-MM-DDTHH:MM:ss");
+  const dataInicial = dayjs()
+    .startOf("day")
+    .add(3, "hour")
+    .format("YYYY-MM-DDTHH:mm:ss");
+  const dataFinal = dayjs()
+    .endOf("day")
+    .add(3, "hour")
+    .format("YYYY-MM-DDTHH:mm:ss");
 
   const { data, isLoading } = useSWR(
     marketplace

@@ -3,7 +3,7 @@ import { Input } from "@/components/Input/Input";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import theme from "@/constants/theme";
 import { createAccess_token } from "@/storage/createAccessToken";
-import { ACCESS_TOKEN } from "@/storage/storageConfig";
+import { ACCESS_TOKEN, TOKEN_EXPIRE_TIME } from "@/storage/storageConfig";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { ChartColumn } from "lucide-react-native";
@@ -42,7 +42,7 @@ export default function index() {
 
       await createAccess_token(data.access_token);
 
-      router.push("/(stack)/Dashboard");
+      router.replace("/(stack)/Dashboard");
     } catch (error) {
       Alert.alert(
         "Erro",
@@ -54,8 +54,23 @@ export default function index() {
 
   async function checkToken() {
     const token = await SecureStore.getItemAsync(ACCESS_TOKEN);
+    const tokenExpireTime = await SecureStore.getItemAsync(TOKEN_EXPIRE_TIME);
+
+    if (tokenExpireTime) {
+      const expireTime = parseInt(tokenExpireTime);
+      const currentTime = new Date().getTime();
+      const timeDifference = currentTime - expireTime;
+
+      if (timeDifference >= 24 * 60 * 60 * 1000) {
+        await SecureStore.deleteItemAsync(ACCESS_TOKEN);
+        await SecureStore.deleteItemAsync(TOKEN_EXPIRE_TIME);
+
+        return router.push("/");
+      }
+    }
+
     if (token) {
-      router.push("/(stack)/Dashboard");
+      router.replace("/(stack)/Dashboard");
     }
   }
 
