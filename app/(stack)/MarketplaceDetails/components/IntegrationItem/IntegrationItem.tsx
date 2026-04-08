@@ -42,6 +42,7 @@ export default function IntegrationItem({
           pathname: "/(stack)/IntegrationDetails/IntegrationDetails",
           params: {
             integracao: JSON.stringify(integracao),
+            rangeSelected: JSON.stringify(rangeSelected),
           },
         })
       }

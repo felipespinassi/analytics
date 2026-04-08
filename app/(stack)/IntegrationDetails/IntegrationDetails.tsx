@@ -1,17 +1,21 @@
+import { BottomSheetCalendar } from "@/components/CalendarBottomSheet/CalendarBottomSheet";
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
 import Loading from "@/components/Loading/Loading";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import type { Theme } from "@/constants/theme";
+import theme from "@/constants/theme";
 import { useGetDailyOrdersRevenue } from "@/hooks/useGetDailyOrdersRevenue";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
 import { useGetOrdersStatus } from "@/hooks/useGetOrdersStatus";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDecimal } from "@/utils/formatDecimal";
 import { dateRange } from "@/utils/selectDate";
+import BottomSheet from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import { Ban, BanknoteX, DollarSign, ShoppingBag } from "lucide-react-native";
+import React, { useRef, useState } from "react";
 import { ScrollView } from "react-native";
 
 type StatusColor = keyof Theme["colors"];
@@ -19,10 +23,17 @@ type StatusColor = keyof Theme["colors"];
 export default function IntegrationDetails() {
   const params = useLocalSearchParams();
   const integracao = JSON.parse(params.integracao as string);
+  const bottomSheetRef = useRef<BottomSheet>(null);
   const [rangeSelected, setRangeSelected] = useState({
-    from: dateRange[3].from,
-    to: dateRange[3].to,
-    label: dateRange[3].label,
+    from: params.rangeSelected
+      ? JSON.parse(params.rangeSelected as string).from
+      : dateRange[3].from,
+    to: params.rangeSelected
+      ? JSON.parse(params.rangeSelected as string).to
+      : dateRange[3].to,
+    label: params.rangeSelected
+      ? JSON.parse(params.rangeSelected as string).label
+      : dateRange[3].label,
   });
 
   const { revenue } = useGetOrdersRevenue({
@@ -56,11 +67,13 @@ export default function IntegrationDetails() {
           <RangeSelect
             rangeSelected={rangeSelected}
             setRangeSelected={setRangeSelected}
+            bottomSheetRef={bottomSheetRef}
           />
         </Box>
         <Box gap="m">
           <Box flexDirection="row" gap="m">
             <CardGeneric
+              icon={<ShoppingBag size={14} color={theme.colors.primary} />}
               label="PEDIDOS"
               value={formatDecimal(
                 rangeSelected.label === "Hoje"
@@ -69,6 +82,7 @@ export default function IntegrationDetails() {
               )}
             />
             <CardGeneric
+              icon={<Ban size={14} color={theme.colors.primary} />}
               label="PEDIDOS CANCELADOS"
               value={formatCurrency(
                 rangeSelected.label === "Hoje"
@@ -80,6 +94,7 @@ export default function IntegrationDetails() {
 
           <Box flexDirection="row" gap="m">
             <CardGeneric
+              icon={<DollarSign size={14} color={theme.colors.primary} />}
               label="FATURAMENTO"
               value={formatCurrency(
                 rangeSelected.label === "Hoje"
@@ -88,6 +103,7 @@ export default function IntegrationDetails() {
               )}
             />
             <CardGeneric
+              icon={<BanknoteX size={14} color={theme.colors.primary} />}
               label="FATURAMENTO CANCELADO"
               value={formatCurrency(
                 rangeSelected.label === "Hoje"
@@ -144,6 +160,10 @@ export default function IntegrationDetails() {
           )}
         </Box>
       </ScrollView>
+      <BottomSheetCalendar
+        setRangeSelected={setRangeSelected}
+        bottomSheetRef={bottomSheetRef}
+      />
     </Box>
   );
 }

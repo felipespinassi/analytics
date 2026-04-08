@@ -1,16 +1,19 @@
 import { dateRange } from "@/utils/selectDate";
-import React, { useState } from "react";
+import React from "react";
 import { ScrollView } from "react-native";
-import { BottomSheetCalendar } from "../CalendarBottomSheet/CalendarBottomSheet";
 import { Box, Text } from "../RestyleComponents/RestyleComponents";
 import { TouchableOpacityBox } from "../TouchableOpacityBox/TouchableOpacityBox";
 
-export default function RangeSelect({ rangeSelected, setRangeSelected }: any) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function RangeSelect({
+  rangeSelected,
+  setRangeSelected,
+  bottomSheetRef,
+}: any) {
+  // ref
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <Box flexDirection="row" gap="s">
+      <Box flexDirection="row" gap="s" flex={1}>
         {dateRange.map((day, index) => {
           return (
             <TouchableOpacityBox
@@ -38,21 +41,13 @@ export default function RangeSelect({ rangeSelected, setRangeSelected }: any) {
           backgroundColor={"secondary"}
           borderRadius="l"
           onPress={() => {
-            setIsOpen(true);
+            bottomSheetRef.current?.snapToIndex(1);
           }}
         >
           <Text fontSize={12} fontWeight={"semibold"}>
             Personalizado
           </Text>
         </TouchableOpacityBox>
-
-        {isOpen && (
-          <BottomSheetCalendar
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            setRangeSelected={setRangeSelected}
-          />
-        )}
       </Box>
     </ScrollView>
   );

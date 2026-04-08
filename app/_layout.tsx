@@ -4,6 +4,7 @@ import "react-native-reanimated";
 
 import theme from "@/constants/theme";
 import { ThemeProvider } from "@shopify/restyle";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RootLayout() {
@@ -17,8 +18,16 @@ export default function RootLayout() {
       }}
     >
       <ThemeProvider theme={theme}>
-        <Stack screenOptions={{ headerShown: false }} />
-        <StatusBar style="auto" />
+        <GestureHandlerRootView
+          style={{
+            flex: 1,
+            backgroundColor: theme.colors.background,
+            marginTop: -5,
+          }}
+        >
+          <Stack screenOptions={{ headerShown: false }} />
+          <StatusBar style="auto" />
+        </GestureHandlerRootView>
       </ThemeProvider>
     </SafeAreaView>
   );

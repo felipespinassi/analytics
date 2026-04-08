@@ -1,18 +1,19 @@
 import theme from "@/constants/theme";
 import { dateRange } from "@/utils/selectDate";
+import { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Calendar, useDateRange } from "@marceloterreiro/flash-calendar";
-import React, { useMemo } from "react";
-import { Alert, Modal, Pressable, StyleSheet, View } from "react-native";
+import React, { useCallback, useMemo } from "react";
+import { Alert, StyleSheet, View } from "react-native";
+import BottomSheetContainer from "../BottomSheetContainer/BottomSheetContainer";
 import Button from "../Button/Button";
 import { Box } from "../RestyleComponents/RestyleComponents";
 
 export const BottomSheetCalendar = ({
-  isOpen,
-  setIsOpen,
   setRangeSelected,
+  bottomSheetRef,
 }: {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  bottomSheetRef: any;
+
   setRangeSelected: (range: {
     from: string;
     to: string;
@@ -48,12 +49,12 @@ export const BottomSheetCalendar = ({
   );
 
   function onCancel() {
-    setIsOpen(false);
     setRangeSelected({
       from: dateRange[2].from,
       to: dateRange[2].to,
       label: dateRange[2].label,
     });
+    bottomSheetRef.current?.close();
   }
 
   function onConfirm() {
@@ -63,23 +64,24 @@ export const BottomSheetCalendar = ({
         to: endId,
         label: "Personalizado",
       });
-      setIsOpen(false);
+      bottomSheetRef.current?.close();
     } else {
       Alert.alert("Por favor, selecione um intervalo de datas válido.");
     }
   }
+
+  // callbacks
+  const onCloseBottomSheet = useCallback(() => {
+    bottomSheetRef.current?.close();
+  }, []);
+
   return (
-    <Modal
-      animationType="fade"
-      transparent
-      visible={isOpen}
-      onRequestClose={onCancel}
+    <BottomSheetContainer
+      snapPoints={["75%"]}
+      onClose={onCloseBottomSheet}
+      ref={bottomSheetRef}
     >
-      <View style={styles.backdrop}>
-        <Pressable
-          style={styles.backdropOverlay}
-          onPress={() => setIsOpen(false)}
-        />
+      <BottomSheetView style={{ flex: 1 }}>
         <View style={styles.card}>
           <View style={styles.calendarContainer}>
             <Calendar.List
@@ -90,40 +92,33 @@ export const BottomSheetCalendar = ({
               theme={calendarTheme}
             />
           </View>
-
-          <Box flexDirection="row" gap="m">
-            <Box flex={1}>
-              <Button onPress={onCancel}>Cancelar</Button>
-            </Box>
-
-            <Box flex={1}>
-              <Button variant="primary" onPress={onConfirm}>
-                Confirmar
-              </Button>
-            </Box>
-          </Box>
         </View>
-      </View>
-    </Modal>
+        <Box flexDirection="row" gap="m">
+          <Box flex={1}>
+            <Button onPress={onCancel}>Cancelar</Button>
+          </Box>
+
+          <Box flex={1}>
+            <Button variant="primary" onPress={onConfirm}>
+              Confirmar
+            </Button>
+          </Box>
+        </Box>
+      </BottomSheetView>
+    </BottomSheetContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-  },
   backdropOverlay: {
     ...StyleSheet.absoluteFillObject,
   },
   card: {
+    flex: 1,
     width: "100%",
     maxWidth: 420,
-    height: "75%",
-    minHeight: 420,
+    height: "100%",
+    minHeight: "80%",
     maxHeight: 640,
     backgroundColor: theme.colors.background,
     borderRadius: 16,

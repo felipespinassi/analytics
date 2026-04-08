@@ -38,7 +38,7 @@ export default function MarketplaceItem({
       onPress={() =>
         router.push({
           pathname: "/(stack)/MarketplaceDetails/MarketplaceDetails",
-          params: { marketplace },
+          params: { marketplace, rangeSelected: JSON.stringify(rangeSelected) },
         })
       }
       gap="m"

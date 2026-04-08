@@ -24,11 +24,17 @@ const palette = {
   statusCancelado: "#EF4444",
   statusNaoCorrelacionado: "#6B7280",
   statusAprovado: "#0cafaf",
+  naoConferido: "#6b7280",
+  aguardandoColeta: "#85a5ff",
+  coletado: "#b7eb8f",
 };
 
 const theme = createTheme({
   colors: {
     ...palette,
+    aguardandoColeta: palette.aguardandoColeta,
+    coletado: palette.coletado,
+    naoConferido: palette.naoConferido,
     containerBackground: palette.background,
     mainBackground: palette.background,
     mainForeground: palette.foreground,

@@ -16,6 +16,7 @@ export function Input({ label, placeholder, value, onChangeText }: Props) {
 
       <Box borderWidth={1} borderColor="border" borderRadius="s" bg="card">
         <TextInput
+          secureTextEntry={label === "Senha"}
           style={{
             color: theme.colors.foreground,
             paddingHorizontal: theme.spacing.s,

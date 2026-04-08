@@ -45,17 +45,17 @@
       "typedRoutes": true,
       "reactCompiler": true
     },
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "8e13b41e-2590-44e5-98ea-2a7c1f4a121e"
-      }
-    },
     "runtimeVersion": {
       "policy": "appVersion"
     },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2910d3c2-0ee6-40df-8503-81dca1e00c25"
+      }
+    },
     "updates": {
-      "url": "https://u.expo.dev/8e13b41e-2590-44e5-98ea-2a7c1f4a121e"
+      "url": "https://u.expo.dev/2910d3c2-0ee6-40df-8503-81dca1e00c25"
     }
   }
 }

@@ -1,26 +1,38 @@
+import { BottomSheetCalendar } from "@/components/CalendarBottomSheet/CalendarBottomSheet";
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
 import Loading from "@/components/Loading/Loading";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import { marketplaces } from "@/constants/marketplaces";
+import theme from "@/constants/theme";
 import { useGetDailyOrdersRevenue } from "@/hooks/useGetDailyOrdersRevenue";
 import { useGetIntegrations } from "@/hooks/useGetIntegrations";
 import { useGetOrdersRevenue } from "@/hooks/useGetOrdersRevenue";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDecimal } from "@/utils/formatDecimal";
 import { dateRange } from "@/utils/selectDate";
+import BottomSheet from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { Ban, BanknoteX, DollarSign, ShoppingBag } from "lucide-react-native";
+import { useRef, useState } from "react";
 import { Image, ScrollView } from "react-native";
 import IntegrationItem from "./components/IntegrationItem/IntegrationItem";
 
 export default function MarketplaceDetails() {
   const params = useLocalSearchParams();
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
   const [rangeSelected, setRangeSelected] = useState({
-    from: dateRange[3].from,
-    to: dateRange[3].to,
-    label: dateRange[3].label,
+    from: params.rangeSelected
+      ? JSON.parse(params.rangeSelected as string).from
+      : dateRange[3].from,
+    to: params.rangeSelected
+      ? JSON.parse(params.rangeSelected as string).to
+      : dateRange[3].to,
+    label: params.rangeSelected
+      ? JSON.parse(params.rangeSelected as string).label
+      : dateRange[3].label,
   });
   const { data, isLoading: isIntegrationsLoading } = useGetIntegrations(
     params.marketplace as string,
@@ -55,12 +67,14 @@ export default function MarketplaceDetails() {
           <RangeSelect
             rangeSelected={rangeSelected}
             setRangeSelected={setRangeSelected}
+            bottomSheetRef={bottomSheetRef}
           />
         </Box>
 
         <Box gap="m">
           <Box flexDirection="row" gap="m">
             <CardGeneric
+              icon={<ShoppingBag size={14} color={theme.colors.primary} />}
               label="PEDIDOS"
               value={formatDecimal(
                 rangeSelected.label === "Hoje"
@@ -69,6 +83,7 @@ export default function MarketplaceDetails() {
               )}
             />
             <CardGeneric
+              icon={<Ban size={14} color={theme.colors.primary} />}
               label="PEDIDOS CANCELADOS"
               value={formatCurrency(
                 rangeSelected.label === "Hoje"
@@ -80,6 +95,7 @@ export default function MarketplaceDetails() {
 
           <Box flexDirection="row" gap="m">
             <CardGeneric
+              icon={<DollarSign size={14} color={theme.colors.primary} />}
               label="FATURAMENTO"
               value={formatCurrency(
                 rangeSelected.label === "Hoje"
@@ -88,6 +104,7 @@ export default function MarketplaceDetails() {
               )}
             />
             <CardGeneric
+              icon={<BanknoteX size={14} color={theme.colors.primary} />}
               label="FATURAMENTO CANCELADO"
               value={formatCurrency(
                 rangeSelected.label === "Hoje"
@@ -121,6 +138,10 @@ export default function MarketplaceDetails() {
           )}
         </Box>
       </ScrollView>
+      <BottomSheetCalendar
+        setRangeSelected={setRangeSelected}
+        bottomSheetRef={bottomSheetRef}
+      />
     </Box>
   );
 }

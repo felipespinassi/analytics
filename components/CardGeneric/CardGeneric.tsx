@@ -1,5 +1,3 @@
-import theme from "@/constants/theme";
-import { ShoppingBag } from "lucide-react-native";
 import { ActivityIndicator } from "react-native";
 import { Box, Text } from "../RestyleComponents/RestyleComponents";
 
@@ -7,10 +5,12 @@ export default function CardGeneric({
   label,
   value,
   loading,
+  icon,
 }: {
   label: string;
   value: string;
   loading?: boolean;
+  icon: React.ReactNode;
 }) {
   return (
     <Box bg="card" flex={1} padding="m" borderRadius="l">
@@ -24,7 +24,7 @@ export default function CardGeneric({
           {label}
         </Text>
         <Box padding="s" bg="primary10" borderRadius="m">
-          <ShoppingBag color={theme.colors.primary} size={14} />
+          {icon}
         </Box>
       </Box>
 
