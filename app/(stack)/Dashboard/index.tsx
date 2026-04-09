@@ -1,11 +1,11 @@
 import { BarChartComponent } from "@/components/BarChart/BarChart";
-import { BottomSheetCalendar } from "@/components/CalendarBottomSheet/CalendarBottomSheet";
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
 import Loading from "@/components/Loading/Loading";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import { TouchableOpacityBox } from "@/components/TouchableOpacityBox/TouchableOpacityBox";
 import theme from "@/constants/theme";
+import { DateRangeContext } from "@/context/DateRangeContext";
 import { useGetDailyOrdersRevenue } from "@/hooks/useGetDailyOrdersRevenue";
 import { useGetMarketplaces } from "@/hooks/useGetMarketplaces";
 import { useGetOrdersPickup } from "@/hooks/useGetOrdersPickup";
@@ -14,8 +14,6 @@ import { useGetProductsRanking } from "@/hooks/useGetProductsRanking";
 import { ACCESS_TOKEN, TOKEN_EXPIRE_TIME } from "@/storage/storageConfig";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDecimal } from "@/utils/formatDecimal";
-import { dateRange } from "@/utils/selectDate";
-import BottomSheet from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -27,19 +25,14 @@ import {
   LogOut,
   ShoppingBag,
 } from "lucide-react-native";
-import React, { useRef, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Alert, ScrollView } from "react-native";
 import MarketplaceItem from "./components/MarketplaceItem/MarketplaceItem";
 
 export default function index() {
   const [currentTab, setCurrentTab] = useState("marketplaces");
-  const [rangeSelected, setRangeSelected] = useState({
-    from: dateRange[3].from,
-    to: dateRange[3].to,
-    label: dateRange[3].label,
-  });
+  const { rangeSelected, setRangeSelected } = useContext(DateRangeContext);
 
-  const bottomSheetRef = useRef<BottomSheet>(null);
   const { data, isLoading: isMarketplacesLoading } = useGetMarketplaces();
   const { revenue, isLoading } = useGetOrdersRevenue({
     dataInicial: dayjs(rangeSelected.from).format("YYYY-MM-DD"),
@@ -112,7 +105,6 @@ export default function index() {
         {/* FILTROS */}
 
         <RangeSelect
-          bottomSheetRef={bottomSheetRef}
           rangeSelected={rangeSelected}
           setRangeSelected={setRangeSelected}
         />
@@ -363,10 +355,6 @@ export default function index() {
             <BarChartComponent />
           </Box> */}
       </ScrollView>
-      <BottomSheetCalendar
-        setRangeSelected={setRangeSelected}
-        bottomSheetRef={bottomSheetRef}
-      />
     </Box>
   );
 }

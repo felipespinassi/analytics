@@ -3,7 +3,7 @@ import { dateRange } from "@/utils/selectDate";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Calendar, useDateRange } from "@marceloterreiro/flash-calendar";
 import React, { useCallback, useMemo } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, Platform, StyleSheet, View } from "react-native";
 import BottomSheetContainer from "../BottomSheetContainer/BottomSheetContainer";
 import Button from "../Button/Button";
 import { Box } from "../RestyleComponents/RestyleComponents";
@@ -79,6 +79,7 @@ export const BottomSheetCalendar = ({
     <BottomSheetContainer
       snapPoints={["75%"]}
       onClose={onCloseBottomSheet}
+      enableContentPanningGesture={Platform.OS !== "android"}
       ref={bottomSheetRef}
     >
       <BottomSheetView style={{ flex: 1 }}>
@@ -89,11 +90,17 @@ export const BottomSheetCalendar = ({
               calendarColorScheme={"dark"}
               calendarActiveDateRanges={calendarActiveDateRanges}
               onCalendarDayPress={onCalendarDayPress}
+              nestedScrollEnabled
               theme={calendarTheme}
             />
           </View>
         </View>
-        <Box flexDirection="row" gap="m">
+        <Box
+          flexDirection="row"
+          gap="m"
+          marginHorizontal="s"
+          marginVertical="xl"
+        >
           <Box flex={1}>
             <Button onPress={onCancel}>Cancelar</Button>
           </Box>
@@ -117,7 +124,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     maxWidth: 420,
-    height: "100%",
+    height: 600,
     minHeight: "80%",
     maxHeight: 640,
     backgroundColor: theme.colors.background,

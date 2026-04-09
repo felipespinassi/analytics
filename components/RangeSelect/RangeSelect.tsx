@@ -1,15 +1,13 @@
+import { DateRangeContext } from "@/context/DateRangeContext";
 import { dateRange } from "@/utils/selectDate";
-import React from "react";
+import dayjs from "dayjs";
+import React, { useContext } from "react";
 import { ScrollView } from "react-native";
 import { Box, Text } from "../RestyleComponents/RestyleComponents";
 import { TouchableOpacityBox } from "../TouchableOpacityBox/TouchableOpacityBox";
 
-export default function RangeSelect({
-  rangeSelected,
-  setRangeSelected,
-  bottomSheetRef,
-}: any) {
-  // ref
+export default function RangeSelect({ rangeSelected, setRangeSelected }: any) {
+  const { bottomSheetRef } = useContext(DateRangeContext);
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -38,14 +36,23 @@ export default function RangeSelect({
         <TouchableOpacityBox
           paddingHorizontal="m"
           paddingVertical="s"
-          backgroundColor={"secondary"}
+          backgroundColor={
+            rangeSelected.label === "Personalizado" ? "primary" : "secondary"
+          }
           borderRadius="l"
           onPress={() => {
             bottomSheetRef.current?.snapToIndex(1);
           }}
         >
           <Text fontSize={12} fontWeight={"semibold"}>
-            Personalizado
+            {rangeSelected.label === "Personalizado" ? (
+              <Text fontSize={12}>
+                {dayjs(rangeSelected.from).format("DD/MM/YYYY")} -{" "}
+                {dayjs(rangeSelected.to).format("DD/MM/YYYY")}
+              </Text>
+            ) : (
+              "Personalizado"
+            )}
           </Text>
         </TouchableOpacityBox>
       </Box>

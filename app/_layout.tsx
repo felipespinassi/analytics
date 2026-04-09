@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
 import theme from "@/constants/theme";
+import { DateRangeProvider } from "@/context/DateRangeContext";
 import { ThemeProvider } from "@shopify/restyle";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,8 +26,10 @@ export default function RootLayout() {
             marginTop: -5,
           }}
         >
-          <Stack screenOptions={{ headerShown: false }} />
-          <StatusBar style="auto" />
+          <DateRangeProvider>
+            <Stack screenOptions={{ headerShown: false }} />
+            <StatusBar style="auto" />
+          </DateRangeProvider>
         </GestureHandlerRootView>
       </ThemeProvider>
     </SafeAreaView>

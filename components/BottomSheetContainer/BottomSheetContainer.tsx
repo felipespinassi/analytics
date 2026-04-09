@@ -17,11 +17,13 @@ export default function BottomSheetContainer({
   onClose,
   children,
   snapPoints,
+  enableContentPanningGesture = true,
 }: {
   ref: React.RefObject<BottomSheet | null>;
   onClose?: () => void;
   children: React.ReactNode;
   snapPoints?: number[] | string[];
+  enableContentPanningGesture?: boolean;
 }) {
   const theme = useTheme<Theme>();
 
@@ -31,6 +33,7 @@ export default function BottomSheetContainer({
       backdropComponent={renderBackdrop}
       index={-1}
       enablePanDownToClose={true}
+      enableContentPanningGesture={enableContentPanningGesture}
       onClose={() => onClose && onClose()}
       ref={ref}
       snapPoints={snapPoints}
