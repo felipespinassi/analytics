@@ -40,6 +40,14 @@ export default function index() {
 
       const data = await response.json();
 
+      if (data.usuario.type !== "admin") {
+        Alert.alert(
+          "Erro",
+          "Apenas administradores podem acessar o dashboard.",
+        );
+        return setLoading(false);
+      }
+
       await createAccess_token(data.access_token);
 
       router.replace("/(stack)/Dashboard");

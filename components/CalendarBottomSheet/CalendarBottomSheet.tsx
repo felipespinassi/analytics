@@ -2,7 +2,7 @@ import theme from "@/constants/theme";
 import { dateRange } from "@/utils/selectDate";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Calendar, useDateRange } from "@marceloterreiro/flash-calendar";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, Platform, StyleSheet, View } from "react-native";
 import BottomSheetContainer from "../BottomSheetContainer/BottomSheetContainer";
 import Button from "../Button/Button";
@@ -13,13 +13,22 @@ export const BottomSheetCalendar = ({
   bottomSheetRef,
 }: {
   bottomSheetRef: any;
-
   setRangeSelected: (range: {
     from: string;
     to: string;
     label: string;
   }) => void;
 }) => {
+  const [calendarReady, setCalendarReady] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCalendarReady(true);
+    }, 300); // aguarda o sheet terminar a animação de abertura
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const {
     calendarActiveDateRanges,
     onCalendarDayPress,
@@ -70,7 +79,6 @@ export const BottomSheetCalendar = ({
     }
   }
 
-  // callbacks
   const onCloseBottomSheet = useCallback(() => {
     bottomSheetRef.current?.close();
   }, []);
@@ -85,14 +93,16 @@ export const BottomSheetCalendar = ({
       <BottomSheetView style={{ flex: 1 }}>
         <View style={styles.card}>
           <View style={styles.calendarContainer}>
-            <Calendar.List
-              calendarFormatLocale="pt"
-              calendarColorScheme={"dark"}
-              calendarActiveDateRanges={calendarActiveDateRanges}
-              onCalendarDayPress={onCalendarDayPress}
-              nestedScrollEnabled
-              theme={calendarTheme}
-            />
+            {calendarReady && (
+              <Calendar.List
+                calendarFormatLocale="pt"
+                calendarColorScheme={"dark"}
+                calendarActiveDateRanges={calendarActiveDateRanges}
+                onCalendarDayPress={onCalendarDayPress}
+                nestedScrollEnabled
+                theme={calendarTheme}
+              />
+            )}
           </View>
         </View>
         <Box
@@ -104,7 +114,6 @@ export const BottomSheetCalendar = ({
           <Box flex={1}>
             <Button onPress={onCancel}>Cancelar</Button>
           </Box>
-
           <Box flex={1}>
             <Button variant="primary" onPress={onConfirm}>
               Confirmar
@@ -117,9 +126,6 @@ export const BottomSheetCalendar = ({
 };
 
 const styles = StyleSheet.create({
-  backdropOverlay: {
-    ...StyleSheet.absoluteFillObject,
-  },
   card: {
     flex: 1,
     width: "100%",
