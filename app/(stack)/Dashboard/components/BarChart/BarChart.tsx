@@ -1,9 +1,12 @@
 import theme from "@/constants/theme";
 import { ActivityIndicator } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
-import { Box, Text } from "../RestyleComponents/RestyleComponents";
+import {
+  Box,
+  Text,
+} from "../../../../../components/RestyleComponents/RestyleComponents";
 
-export const BarChartComponent = ({ data, isLoading }: any) => {
+export default function BarChartComponent({ data, isLoading }: any) {
   const pieData = [
     {
       value: data?.statusCount?.naoconferido || 0,
@@ -103,4 +106,4 @@ export const BarChartComponent = ({ data, isLoading }: any) => {
       </Box>
     </Box>
   );
-};
+}

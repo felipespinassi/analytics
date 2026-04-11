@@ -49,7 +49,7 @@ export default function MarketplaceItem({
       flexDirection="row"
       bg="card"
     >
-      <Box bg="container" borderRadius="s" padding="s" justifyContent="center">
+      <Box bg="primary10" borderRadius="s" padding="s" justifyContent="center">
         <Image
           resizeMode="contain"
           source={

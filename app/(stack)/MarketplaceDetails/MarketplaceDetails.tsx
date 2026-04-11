@@ -1,3 +1,4 @@
+import ArrowBack from "@/components/ArrowBack/ArrowBack";
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
 import Loading from "@/components/Loading/Loading";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
@@ -37,7 +38,8 @@ export default function MarketplaceDetails() {
   return (
     <Box bg="background" flex={1} padding="m">
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Box mb="m">
+        <Box mb="m" flexDirection="row" alignItems="center" gap="m">
+          <ArrowBack />
           <Image
             resizeMode="contain"
             source={
@@ -47,7 +49,7 @@ export default function MarketplaceDetails() {
             style={{ width: 100, height: 30 }}
           />
 
-          <Text fontSize={12}>{data?.integracoes?.length} Lojas</Text>
+          {/* <Text fontSize={12}>{data?.integracoes?.length} Lojas</Text> */}
         </Box>
 
         <Box mb="m">

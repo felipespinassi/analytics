@@ -1,3 +1,4 @@
+import ArrowBack from "@/components/ArrowBack/ArrowBack";
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
 import Loading from "@/components/Loading/Loading";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
@@ -50,7 +51,10 @@ export default function IntegrationDetails() {
   return (
     <Box bg="background" flex={1} padding="m">
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text marginVertical="m">{integracao.nome}</Text>
+        <Box flexDirection="row" alignItems="center" gap="m">
+          <ArrowBack />
+          <Text marginVertical="m">{integracao.nome}</Text>
+        </Box>
         <Box mb="m">
           <RangeSelect
             rangeSelected={rangeSelected}

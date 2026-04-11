@@ -1,4 +1,3 @@
-import { BarChartComponent } from "@/components/BarChart/BarChart";
 import CardGeneric from "@/components/CardGeneric/CardGeneric";
 import Loading from "@/components/Loading/Loading";
 import RangeSelect from "@/components/RangeSelect/RangeSelect";
@@ -27,10 +26,14 @@ import {
 } from "lucide-react-native";
 import React, { useContext, useState } from "react";
 import { Alert, ScrollView } from "react-native";
+import BarChartComponent from "./components/BarChart/BarChart";
 import MarketplaceItem from "./components/MarketplaceItem/MarketplaceItem";
+import ProductsRankingItem from "./components/ProductsRanking/ProductsRanking";
 
 export default function index() {
-  const [currentTab, setCurrentTab] = useState("marketplaces");
+  const [currentTab, setCurrentTab] = useState<
+    "marketplaces" | "produtos" | "coleta"
+  >("marketplaces");
   const { rangeSelected, setRangeSelected } = useContext(DateRangeContext);
 
   const { data, isLoading: isMarketplacesLoading } = useGetMarketplaces();
@@ -47,6 +50,39 @@ export default function index() {
     });
   const { data: pickupConference, isLoading: isPickupConferenceLoading } =
     useGetOrdersPickup();
+
+  const items = {
+    marketplaces: (
+      <>
+        {data?.marketplaces?.map((marketplace, index) => {
+          return (
+            <MarketplaceItem
+              rangeSelected={rangeSelected}
+              key={index}
+              marketplace={marketplace}
+            />
+          );
+        })}
+      </>
+    ),
+    produtos: (
+      <Box gap="s" mt="s">
+        {productsRanking?.companies?.[0]?.produtos?.map((produto, index) => {
+          return (
+            <ProductsRankingItem key={index} produto={produto} index={index} />
+          );
+        })}
+      </Box>
+    ),
+    coleta: (
+      <Box marginVertical="m">
+        <BarChartComponent
+          data={pickupConference}
+          isLoading={isPickupConferenceLoading}
+        />
+      </Box>
+    ),
+  };
 
   return (
     <Box bg="background" padding="m" flex={1}>
@@ -119,7 +155,9 @@ export default function index() {
         >
           <CalendarIcon size={14} color={theme.colors.mutedForeground} />
           <Text color="mutedForeground" fontSize={14} fontWeight={"bold"}>
-            RESUMO DO DIA
+            {rangeSelected.label === "Personalizado"
+              ? `${dayjs(rangeSelected.from).format("DD/MM")} - ${dayjs(rangeSelected.to).format("DD/MM")}`
+              : rangeSelected.label}
           </Text>
         </Box>
 
@@ -183,7 +221,7 @@ export default function index() {
               <Box flexDirection="row" backgroundColor="card" borderRadius="s">
                 <TouchableOpacityBox
                   paddingHorizontal="s"
-                  paddingVertical="xs"
+                  paddingVertical="s"
                   borderRadius="s"
                   backgroundColor={
                     currentTab === "marketplaces" ? "primary" : "card"
@@ -210,7 +248,7 @@ export default function index() {
                     currentTab === "produtos" ? "primary" : "card"
                   }
                   paddingHorizontal="s"
-                  paddingVertical="xs"
+                  paddingVertical="s"
                   borderRadius="s"
                   alignItems="center"
                   flex={1}
@@ -231,7 +269,7 @@ export default function index() {
                 <TouchableOpacityBox
                   backgroundColor={currentTab === "coleta" ? "primary" : "card"}
                   paddingHorizontal="s"
-                  paddingVertical="xs"
+                  paddingVertical="s"
                   borderRadius="s"
                   alignItems="center"
                   flex={1}
@@ -248,112 +286,11 @@ export default function index() {
                   </Text>
                 </TouchableOpacityBox>
               </Box>
-              {currentTab === "marketplaces" ? (
-                <>
-                  {data?.marketplaces?.map(
-                    (marketplace: string, index: number) => {
-                      return (
-                        <MarketplaceItem
-                          rangeSelected={rangeSelected}
-                          key={index}
-                          marketplace={marketplace}
-                        />
-                      );
-                    },
-                  )}
-                </>
-              ) : (
-                <>
-                  {currentTab === "produtos" ? (
-                    <Box gap="s" mt="s">
-                      {productsRanking?.companies?.[0]?.produtos?.map(
-                        (produto: any, index: number) => {
-                          return (
-                            <Box
-                              borderRadius="s"
-                              key={index}
-                              padding="m"
-                              backgroundColor="card"
-                              gap="s"
-                            >
-                              <Box>
-                                <Text fontSize={14} fontWeight="bold">
-                                  {produto.productName}
-                                </Text>
-                                <Text fontSize={12} color="mutedForeground">
-                                  SKU: {produto.sku}
-                                </Text>
-                              </Box>
 
-                              <Box
-                                flexDirection="row"
-                                justifyContent="space-between"
-                              >
-                                <Text fontSize={12} color="mutedForeground">
-                                  Vendida:{" "}
-                                  {formatDecimal(
-                                    Number(produto.quantidadeVendida || 0),
-                                  )}
-                                </Text>
-                                <Text fontSize={12} color="mutedForeground">
-                                  Cancelada:{" "}
-                                  {formatDecimal(
-                                    Number(produto.quantidadeCancelada || 0),
-                                  )}
-                                </Text>
-                              </Box>
-
-                              <Box
-                                flexDirection="row"
-                                justifyContent="space-between"
-                              >
-                                <Text
-                                  fontSize={13}
-                                  fontWeight="bold"
-                                  color="primary"
-                                >
-                                  Total:{" "}
-                                  {formatCurrency(
-                                    Number(produto.valorTotal || 0),
-                                  )}
-                                </Text>
-                                <Text
-                                  fontSize={13}
-                                  fontWeight="bold"
-                                  color="primary"
-                                >
-                                  Preco medio:{" "}
-                                  {formatCurrency(
-                                    Number(produto.precoMedio || 0),
-                                  )}
-                                </Text>
-                              </Box>
-                            </Box>
-                          );
-                        },
-                      )}
-                    </Box>
-                  ) : (
-                    <Box marginVertical="m">
-                      <BarChartComponent
-                        data={pickupConference}
-                        isLoading={isPickupConferenceLoading}
-                      />
-                    </Box>
-                  )}
-                </>
-              )}
+              {items[currentTab as keyof typeof items]}
             </>
           )}
         </Box>
-        {/* 
-          <Box marginVertical="m">
-            <Text marginBottom="m" fontWeight={"bold"} color="mutedForeground">
-              FATURAMENTO DOS ÚLTIMOS 6 MESES
-            </Text>
-
-            <BarChartComponent />
-          </Box> */}
       </ScrollView>
     </Box>
   );

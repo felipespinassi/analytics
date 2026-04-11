@@ -1,3 +1,4 @@
+import { RevenueTypes } from "@/@types/RevenueTypes";
 import { fetcher } from "@/utils/fetcher";
 import useSWR from "swr";
 
@@ -12,7 +13,7 @@ export function useGetOrdersRevenue({
   marketplace?: string;
   integracao?: string;
 }) {
-  const { data, isLoading, error } = useSWR(
+  const { data, isLoading, error } = useSWR<RevenueTypes>(
     marketplace
       ? `https://api.expedy.com.br/v2/api/reports/daily-orders?dataInicial=${dataInicial}&dataFinal=${dataFinal}&tipo=marketplace&marketplace=${marketplace}`
       : integracao
