@@ -1,10 +1,7 @@
+import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import theme from "@/constants/theme";
 import { ActivityIndicator } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
-import {
-  Box,
-  Text,
-} from "../../../../../components/RestyleComponents/RestyleComponents";
 
 export default function BarChartComponent({ data, isLoading }: any) {
   const pieData = [
