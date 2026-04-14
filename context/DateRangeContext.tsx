@@ -3,11 +3,24 @@ import { Box } from "@/components/RestyleComponents/RestyleComponents";
 import { dateRange } from "@/utils/selectDate";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { createContext, useRef, useState } from "react";
-
-export const DateRangeContext = createContext({} as any);
+interface types {
+  rangeSelected: {
+    from: string;
+    to: string;
+    label: string;
+  };
+  setRangeSelected: React.Dispatch<
+    React.SetStateAction<{
+      from: string;
+      to: string;
+      label: string;
+    }>
+  >;
+  bottomSheetRef: any;
+}
+export const DateRangeContext = createContext({} as types);
 
 export function DateRangeProvider({ children }: { children: React.ReactNode }) {
-  //  const bottomSheetRef = useRef<BottomSheet>(null);
   const [rangeSelected, setRangeSelected] = useState({
     from: dateRange[3].from,
     to: dateRange[3].to,

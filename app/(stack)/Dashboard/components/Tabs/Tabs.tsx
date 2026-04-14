@@ -10,7 +10,11 @@ import BarChartComponent from "./components/BarChart/BarChart";
 import MarketplaceItem from "./components/MarketplaceItem/MarketplaceItem";
 import ProductsRankingItem from "./components/ProductsRanking/ProductsRanking";
 
-export default function Tabs({ rangeSelected }: { rangeSelected: any }) {
+export default function Tabs({
+  rangeSelected,
+}: {
+  rangeSelected: { label: string; from: string; to: string };
+}) {
   const [currentTab, setCurrentTab] = useState<
     "marketplaces" | "produtos" | "coleta"
   >("marketplaces");
@@ -32,7 +36,7 @@ export default function Tabs({ rangeSelected }: { rangeSelected: any }) {
           <Loading />
         ) : (
           <>
-            {data?.marketplaces?.map((marketplace: any, index: number) => {
+            {data?.marketplaces?.map((marketplace, index) => {
               return (
                 <MarketplaceItem
                   rangeSelected={rangeSelected}
@@ -52,7 +56,7 @@ export default function Tabs({ rangeSelected }: { rangeSelected: any }) {
         ) : (
           <Box gap="s" mt="s">
             {productsRanking?.companies?.[0]?.produtos?.map(
-              (produto: any, index: number) => {
+              (produto, index) => {
                 return (
                   <ProductsRankingItem
                     key={index}

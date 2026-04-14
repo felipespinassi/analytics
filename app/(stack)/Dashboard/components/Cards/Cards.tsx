@@ -9,7 +9,11 @@ import dayjs from "dayjs";
 import { Ban, BanknoteX, DollarSign, ShoppingBag } from "lucide-react-native";
 import React from "react";
 
-export default function Cards({ rangeSelected }: any) {
+export default function Cards({
+  rangeSelected,
+}: {
+  rangeSelected: { label: string; from: string; to: string };
+}) {
   const { revenue, isLoading } = useGetOrdersRevenue({
     dataInicial: dayjs(rangeSelected.from).format("YYYY-MM-DD"),
     dataFinal: dayjs(rangeSelected.to).format("YYYY-MM-DD"),

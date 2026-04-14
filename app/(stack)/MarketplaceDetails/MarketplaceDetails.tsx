@@ -12,7 +12,7 @@ import Cards from "./components/Cards/Cards";
 import IntegrationItem from "./components/IntegrationItem/IntegrationItem";
 
 export default function MarketplaceDetails() {
-  const params = useLocalSearchParams();
+  const params: { marketplace: string } = useLocalSearchParams();
 
   const { rangeSelected, setRangeSelected } = useContext(DateRangeContext);
   const { data, isLoading: isIntegrationsLoading } = useGetIntegrations(

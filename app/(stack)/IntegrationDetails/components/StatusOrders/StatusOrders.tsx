@@ -6,7 +6,13 @@ import React from "react";
 
 type StatusColor = keyof Theme["colors"];
 
-export default function StatusOrders({ integracao, rangeSelected }: any) {
+export default function StatusOrders({
+  integracao,
+  rangeSelected,
+}: {
+  integracao: { id: string };
+  rangeSelected: { from: string; to: string };
+}) {
   const { data: ordersStatus, isLoading: isOrdersStatusLoading } =
     useGetOrdersStatus({
       integracao: integracao.id as string,

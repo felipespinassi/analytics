@@ -17,7 +17,7 @@ export default function IntegrationItem({
   marketplace,
   rangeSelected,
 }: {
-  integracao: any;
+  integracao: { id: string; nome: string };
   marketplace: string;
   rangeSelected: {
     from: string;

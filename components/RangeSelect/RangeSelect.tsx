@@ -6,7 +6,23 @@ import { ScrollView } from "react-native";
 import { Box, Text } from "../RestyleComponents/RestyleComponents";
 import { TouchableOpacityBox } from "../TouchableOpacityBox/TouchableOpacityBox";
 
-export default function RangeSelect({ rangeSelected, setRangeSelected }: any) {
+export default function RangeSelect({
+  rangeSelected,
+  setRangeSelected,
+}: {
+  rangeSelected: {
+    from: string;
+    to: string;
+    label: string;
+  };
+  setRangeSelected: React.Dispatch<
+    React.SetStateAction<{
+      from: string;
+      to: string;
+      label: string;
+    }>
+  >;
+}) {
   const { bottomSheetRef } = useContext(DateRangeContext);
 
   return (

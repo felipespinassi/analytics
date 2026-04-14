@@ -3,7 +3,13 @@ import theme from "@/constants/theme";
 import { ActivityIndicator } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 
-export default function BarChartComponent({ data, isLoading }: any) {
+export default function BarChartComponent({
+  data,
+  isLoading,
+}: {
+  data: any;
+  isLoading: boolean;
+}) {
   const pieData = [
     {
       value: data?.statusCount?.naoconferido || 0,
