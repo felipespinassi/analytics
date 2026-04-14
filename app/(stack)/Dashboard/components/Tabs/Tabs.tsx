@@ -87,7 +87,12 @@ export default function Tabs({
   };
   return (
     <>
-      <Box flexDirection="row" backgroundColor="card" borderRadius="s">
+      <Box
+        flexDirection="row"
+        marginTop="s"
+        backgroundColor="card"
+        borderRadius="s"
+      >
         <TouchableOpacityBox
           paddingHorizontal="s"
           paddingVertical="s"

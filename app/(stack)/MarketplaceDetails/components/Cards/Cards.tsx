@@ -16,7 +16,7 @@ export default function Cards({
   rangeSelected: { label: string; from: string; to: string };
   params: { marketplace: string };
 }) {
-  const { revenue } = useGetOrdersRevenue({
+  const { revenue, isLoading } = useGetOrdersRevenue({
     dataInicial: dayjs(rangeSelected.from).format("YYYY-MM-DD"),
     dataFinal: dayjs(rangeSelected.to).format("YYYY-MM-DD"),
     marketplace: params.marketplace as string,
@@ -30,6 +30,7 @@ export default function Cards({
     <Box gap="m">
       <Box flexDirection="row" gap="m">
         <CardGeneric
+          loading={isLoading}
           icon={<ShoppingBag size={14} color={theme.colors.primary} />}
           label="PEDIDOS"
           value={formatDecimal(
@@ -39,6 +40,7 @@ export default function Cards({
           )}
         />
         <CardGeneric
+          loading={isLoading}
           icon={<Ban size={14} color={theme.colors.primary} />}
           label="PEDIDOS CANCELADOS"
           value={formatDecimal(
@@ -51,6 +53,7 @@ export default function Cards({
 
       <Box flexDirection="row" gap="m">
         <CardGeneric
+          loading={isLoading}
           icon={<DollarSign size={14} color={theme.colors.primary} />}
           label="FATURAMENTO"
           value={formatCurrency(
@@ -60,6 +63,7 @@ export default function Cards({
           )}
         />
         <CardGeneric
+          loading={isLoading}
           icon={<BanknoteX size={14} color={theme.colors.primary} />}
           label="FATURAMENTO CANCELADO"
           value={formatCurrency(
