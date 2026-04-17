@@ -2,9 +2,7 @@ import Loading from "@/components/Loading/Loading";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import { TouchableOpacityBox } from "@/components/TouchableOpacityBox/TouchableOpacityBox";
 import { useGetMarketplaces } from "@/hooks/useGetMarketplaces";
-import { useGetOrdersPickup } from "@/hooks/useGetOrdersPickup";
-import { useGetProductsRanking } from "@/hooks/useGetProductsRanking";
-import dayjs from "dayjs";
+import { FlashList } from "@shopify/flash-list";
 import React, { useState } from "react";
 import BarChartComponent from "./components/BarChart/BarChart";
 import MarketplaceItem from "./components/MarketplaceItem/MarketplaceItem";
@@ -19,72 +17,8 @@ export default function Tabs({
     "marketplaces" | "produtos" | "coleta"
   >("marketplaces");
 
-  const { data: productsRanking, isLoading: isProductsRankingLoading } =
-    useGetProductsRanking({
-      dataInicial: dayjs(rangeSelected.from).format("YYYY-MM-DD"),
-      dataFinal: dayjs(rangeSelected.to).format("YYYY-MM-DD"),
-    });
   const { data, isLoading: isMarketplacesLoading } = useGetMarketplaces();
 
-  const { data: pickupConference, isLoading: isPickupConferenceLoading } =
-    useGetOrdersPickup();
-
-  const items = {
-    marketplaces: (
-      <>
-        {isMarketplacesLoading ? (
-          <Loading />
-        ) : (
-          <>
-            {data?.marketplaces?.map((marketplace, index) => {
-              return (
-                <MarketplaceItem
-                  rangeSelected={rangeSelected}
-                  key={index}
-                  marketplace={marketplace}
-                />
-              );
-            })}
-          </>
-        )}
-      </>
-    ),
-    produtos: (
-      <>
-        {isProductsRankingLoading ? (
-          <Loading />
-        ) : (
-          <Box gap="s" mt="s">
-            {productsRanking?.companies?.[0]?.produtos?.map(
-              (produto, index) => {
-                return (
-                  <ProductsRankingItem
-                    key={index}
-                    produto={produto}
-                    index={index}
-                  />
-                );
-              },
-            )}
-          </Box>
-        )}
-      </>
-    ),
-    coleta: (
-      <>
-        {isPickupConferenceLoading ? (
-          <Loading />
-        ) : (
-          <Box marginVertical="m">
-            <BarChartComponent
-              data={pickupConference}
-              isLoading={isPickupConferenceLoading}
-            />
-          </Box>
-        )}
-      </>
-    ),
-  };
   return (
     <>
       <Box
@@ -149,7 +83,40 @@ export default function Tabs({
         </TouchableOpacityBox>
       </Box>
 
-      {items[currentTab as keyof typeof items]}
+      {currentTab === "coleta" && (
+        <Box marginVertical="m">
+          <BarChartComponent />
+        </Box>
+      )}
+
+      {currentTab === "produtos" && (
+        <Box gap="s" mt="s">
+          <ProductsRankingItem rangeSelected={rangeSelected} />
+        </Box>
+      )}
+
+      {currentTab === "marketplaces" && (
+        <>
+          {isMarketplacesLoading ? (
+            <Loading />
+          ) : (
+            <>
+              <FlashList
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) => {
+                  return (
+                    <MarketplaceItem
+                      rangeSelected={rangeSelected}
+                      marketplace={item}
+                    />
+                  );
+                }}
+                data={data?.marketplaces}
+              />
+            </>
+          )}
+        </>
+      )}
     </>
   );
 }

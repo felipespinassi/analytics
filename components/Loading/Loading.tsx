@@ -1,3 +1,4 @@
+import theme from "@/constants/theme";
 import React from "react";
 import { ActivityIndicator } from "react-native";
 import { Box } from "../RestyleComponents/RestyleComponents";
@@ -5,7 +6,7 @@ import { Box } from "../RestyleComponents/RestyleComponents";
 export default function Loading() {
   return (
     <Box mt="xxl">
-      <ActivityIndicator size="large" />
+      <ActivityIndicator size="large" color={theme.colors.primary} />
     </Box>
   );
 }

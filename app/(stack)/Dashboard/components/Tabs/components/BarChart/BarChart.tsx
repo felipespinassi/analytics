@@ -1,15 +1,11 @@
+import Loading from "@/components/Loading/Loading";
 import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import theme from "@/constants/theme";
-import { ActivityIndicator } from "react-native";
+import { useGetOrdersPickup } from "@/hooks/useGetOrdersPickup";
 import { PieChart } from "react-native-gifted-charts";
 
-export default function BarChartComponent({
-  data,
-  isLoading,
-}: {
-  data: any;
-  isLoading: boolean;
-}) {
+export default function BarChartComponent({}: {}) {
+  const { data, isLoading } = useGetOrdersPickup();
   const pieData = [
     {
       value: data?.statusCount?.naoconferido || 0,
@@ -30,11 +26,7 @@ export default function BarChartComponent({
   ];
 
   if (isLoading) {
-    return (
-      <Box flex={1} marginTop="m" justifyContent="center" alignItems="center">
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-      </Box>
-    );
+    return <Loading />;
   }
 
   return (

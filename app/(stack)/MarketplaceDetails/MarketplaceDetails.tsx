@@ -5,6 +5,7 @@ import { Box, Text } from "@/components/RestyleComponents/RestyleComponents";
 import { marketplaces } from "@/constants/marketplaces";
 import { DateRangeContext } from "@/context/DateRangeContext";
 import { useGetIntegrations } from "@/hooks/useGetIntegrations";
+import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams } from "expo-router";
 import { useContext } from "react";
 import { Image, ScrollView } from "react-native";
@@ -32,8 +33,6 @@ export default function MarketplaceDetails() {
             }
             style={{ width: 100, height: 30 }}
           />
-
-          {/* <Text fontSize={12}>{data?.integracoes?.length} Lojas</Text> */}
         </Box>
 
         <Box mb="m">
@@ -54,16 +53,23 @@ export default function MarketplaceDetails() {
             <Loading />
           ) : (
             <>
-              {data?.integracoes?.map((integracao: any, index: number) => {
-                return (
-                  <IntegrationItem
-                    rangeSelected={rangeSelected}
-                    key={index}
-                    integracao={integracao}
-                    marketplace={params.marketplace as string}
-                  />
-                );
-              })}
+              <FlashList
+                renderItem={({
+                  item,
+                }: {
+                  item: { id: string; nome: string };
+                  index: number;
+                }) => {
+                  return (
+                    <IntegrationItem
+                      rangeSelected={rangeSelected}
+                      integracao={item}
+                      marketplace={params.marketplace as string}
+                    />
+                  );
+                }}
+                data={data?.integracoes}
+              />
             </>
           )}
         </Box>
