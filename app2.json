@@ -1,38 +1,28 @@
 {
   "expo": {
-    "name": "Expedy Analytics",
-    "slug": "expedyanalytics",
-    "version": "2.0.0",
+    "name": "analytics",
+    "slug": "analytics",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
+    "scheme": "analytics",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "assetBundlePatterns": [
-      "**/*"
-    ],
     "ios": {
-      "buildNumber": "8",
-      "supportsTablet": true,
-      "bundleIdentifier": "com.expedy.analytics"
+      "supportsTablet": true
     },
     "android": {
-      "versionCode": 11,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/icon.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.expedy.expedyanalytics"
+      "package": "com.expedy_dev.analytics"
     },
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "ce96476c-2f4d-41c7-b21a-0da29b0918cb"
-      }
     },
     "plugins": [
       "expo-router",
@@ -57,8 +47,14 @@
     "runtimeVersion": {
       "policy": "appVersion"
     },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2910d3c2-0ee6-40df-8503-81dca1e00c25"
+      }
+    },
     "updates": {
-      "url": "https://u.expo.dev/ce96476c-2f4d-41c7-b21a-0da29b0918cb"
+      "url": "https://u.expo.dev/2910d3c2-0ee6-40df-8503-81dca1e00c25"
     }
   }
 }
